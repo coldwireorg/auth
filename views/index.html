@@ -1,8 +1,8 @@
 <div class="auth-form">
   {{ if .Register }}
-  	<form class="form" action="/api/register">
+  	<form class="form" method="post" action="/api/register">
   {{ else }}
-    <form class="form" action="/api/login">
+    <form class="form" method="post" action="/api/login">
   {{end}}
 		<div class="top">
 			<img src="/static/img/icons/lock.svg" width="16px" height="16px" alt=""> Make sure your connection is safe

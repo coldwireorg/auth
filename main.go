@@ -1,7 +1,9 @@
 package main
 
 import (
+	"auth/database"
 	"auth/router"
+	"auth/utils/tokens"
 	"log"
 	"os"
 
@@ -26,8 +28,12 @@ func main() {
 		Views: engine,
 	})
 
-	app.Use(cors.New()) // Add cors
+	database.Connect()
 
+	// Generate JWT signin keys
+	tokens.GenerateKeys()
+
+	app.Use(cors.New()) // Add cors
 	app.Static("/static", "./static")
 
 	router.SetupViews(app)

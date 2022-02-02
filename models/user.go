@@ -14,7 +14,6 @@ type User struct {
 	Password   string `db:"password"`
 	PublicKey  []byte `db:"public_key"`
 	PrivateKey []byte `db:"private_key"`
-	Quota      int64  `db:"quota"`
 }
 
 func (user User) Exist() bool {
@@ -41,7 +40,7 @@ func (user User) Create() error {
 }
 
 func (user User) Get() (User, error) {
-	err := pgxscan.Get(context.Background(), database.DB, &user, `SELECT username, password, public_key, private_key, quota FROM users WHERE username = $1`, user.Username)
+	err := pgxscan.Get(context.Background(), database.DB, &user, `SELECT * FROM users WHERE username = $1`, user.Username)
 	if err != nil {
 		log.Println(err.Error())
 		return User{}, err
