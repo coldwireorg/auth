@@ -1,24 +1,34 @@
-# Website
+# Auth
 
 ## How to use it
 ### Dev
 ```
-git clone https://codeberg.org/coldwire/website.git
-cd website
+git clone https://codeberg.org/coldwire/auth.git
+cd auth
 go mod tidy
 go run main.go
 ```
 
-### Prod
-#### Binary
-```
-git clone https://codeberg.org/coldwire/website.git
-cd website
-go mod tidy
-go build
-```
+## Endpoints
 
-then move the generated binary with the others files (`static`, `views`, `.env`) to your server and just run `./main`
+---
 
-#### Docher
-coming soon
+### Signing key
+
+- GET `/api/pubkey`: Get server's public key for tokens verifications
+
+  ```
+  curl -X POST 'https://auth.coldwire.org/api/pubkey'
+  ```
+
+---
+
+### User's public key
+
+- GET `/api/pubkey/<username>`: Get a user public key for encryption
+
+  ```
+  curl -X POST 'https://auth.coldwire.org/api/pubkey/:username'
+  ```
+
+
