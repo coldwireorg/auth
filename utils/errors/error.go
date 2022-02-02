@@ -8,9 +8,6 @@ type apiError struct {
 	message string
 }
 
-func HandleError(ctx *fiber.Ctx, err apiError) error {
-	return ctx.Status(err.status).JSON(fiber.Map{
-		"code":    err.code,
-		"message": err.message,
-	})
+func HandleError(c *fiber.Ctx, err apiError, path string) error {
+	return c.Redirect("/" + path + "?err=" + err.message)
 }

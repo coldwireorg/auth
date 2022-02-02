@@ -14,7 +14,7 @@
       <p>Sign in</p>
     {{end}}
 
-    {{ if .Error }}
+    {{ if ne .Error "" }}
       <div class="error">
         <p>{{ .Error }}</p>
       </div>

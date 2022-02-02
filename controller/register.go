@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/alexedwards/argon2id"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -25,20 +26,20 @@ func Register(c *fiber.Ctx) error {
 
 	// Verify that the username is not empty or too short
 	if username == "" {
-		return errors.HandleError(c, errors.ErrRequest)
+		return errors.HandleError(c, errors.ErrRequest, "sign-up")
 	}
 
 	// Verify if the user already exist
 	exist := user.Exist()
 	log.Println(exist)
 	if exist {
-		return errors.HandleError(c, errors.ErrAuthExist)
+		return errors.HandleError(c, errors.ErrAuthExist, "sign-up")
 	}
 
 	// Hash password with argon2id
 	hash, err := argon2id.CreateHash(password, argon2id.DefaultParams)
 	if err != nil {
-		return errors.HandleError(c, errors.ErrInternal)
+		return errors.HandleError(c, errors.ErrInternal, "sign-up")
 	}
 
 	// Generate user's keypair
@@ -50,14 +51,14 @@ func Register(c *fiber.Ctx) error {
 	// Encode keys to store them
 	encodedPvkey, encodedPbkey, err := cwcrypto.Encode(pvkey, pbkey)
 	if err != nil {
-		return c.SendString(err.Error())
+		return errors.HandleError(c, errors.ErrInternal, "sign-up")
 	}
 
 	// Encrypt private key with user's password wich is derived using Argon2i
 	pvKeyEncryptionKey := cwcrypto.DeriveKey([]byte(password))
 	encryptedPvkey, err := chacha20.Encrypt(encodedPvkey, pvKeyEncryptionKey)
 	if err != nil {
-		return errors.HandleError(c, errors.ErrInternal)
+		return errors.HandleError(c, errors.ErrInternal, "sign-up")
 	}
 
 	// Set user data
@@ -67,11 +68,11 @@ func Register(c *fiber.Ctx) error {
 
 	err = user.Create()
 	if err != nil {
-		return errors.HandleError(c, errors.ErrDatabaseCreate)
+		return errors.HandleError(c, errors.ErrDatabaseCreate, "sign-up")
 	}
 
-	exp := time.Hour * 2                                        // define token expiration
-	jwt := tokens.Generate(username, string(encodedPvkey), exp) // Generate JWT token
+	exp := time.Hour * 2                                                // define token expiration
+	jwt := tokens.Generate(username, hexutil.Encode(encodedPvkey), exp) // Generate JWT token
 
 	// Set cookies
 	c.Cookie(utils.GenCookie("token", jwt, exp, os.Getenv("SERVER_DOMAIN")))
