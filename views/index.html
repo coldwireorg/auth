@@ -1,0 +1,177 @@
+<div class="auth-form">
+  {{ if .Register }}
+  	<form class="form" action="/api/register">
+  {{ else }}
+    <form class="form" action="/api/login">
+  {{end}}
+		<div class="top">
+			<img src="/static/img/icons/lock.svg" width="16px" height="16px" alt=""> Make sure your connection is safe
+		</div>
+
+    {{ if .Register }}
+		  <p>Sign up</p>
+    {{ else }}
+      <p>Sign in</p>
+    {{end}}
+
+    {{ if .Error }}
+      <div class="error">
+        <p>{{ .Error }}</p>
+      </div>
+    {{end}}
+
+		<input type="text" placeholder="Username" name="username" />
+    <input type="password" placeholder="Password" name="password" />
+
+    {{ if .Register }}
+      <input type="password" placeholder="Oassword" name="repassword" />
+    {{end}}
+
+    <div class="submit">
+      {{ if .Register }}
+  			<input class="btn" type="submit" value="Register" />
+      {{ else }}
+  			<input class="btn" type="submit" value="Login" />
+      {{end}}
+			<p>
+        {{ if .Register }}
+          Already have an account? <a href="/sign-in">Sign in</a>!
+        {{ else }}
+          You don't have an account yet? <a href="/sign-up">Create one</a>!
+        {{end}}
+			</p>
+		</div>
+	</form>
+</div>
+
+<style>
+	input[type="password"], input[type="text"] {
+		height: 32px;
+		width: auto;
+
+		background-color: var(--complementary-gray-1);
+		border: 1px solid var(--complementary-white-25);
+		border-radius: 8px;
+
+		font-size: 12px;
+
+		padding: 0 15px 0 15px;
+
+		color: var(--color-white);
+	}
+
+	.auth-form {
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 50%;
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.auth-form .form {
+		width: 224px;
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+
+		background-color: var(--complementary-gray-3);
+		padding: 32px;
+		border-radius: 8px;
+	}
+
+	.auth-form .form .top {
+		width: auto;
+		height: 48px;
+		background-color: var(--primary-green-25);
+
+		display: flex;
+		align-items: center;
+		justify-content: space-around;
+
+		color: var(--primary-green);
+		font-size: 10px;
+
+		margin: -32px;
+		margin-bottom: 0px;
+		border-top-left-radius: 8px;
+		border-top-right-radius: 8px;
+
+		padding-left: 32px;
+		padding-right: 32px;
+	}
+
+	.auth-form .form .submit {
+		display: flex;
+		flex-direction: column;
+		gap: 0px;
+	}
+
+	.auth-form .form .submit p {
+		color: var(--complementary-white-50);
+		display: block;
+		margin-top: 15px;
+		font-size: 10px;
+	}
+
+	.auth-form .form a {
+		color: var(--complementary-gray);
+		text-decoration: underline;
+		cursor: pointer;
+	}
+
+	.auth-form .form .error {
+		background-color: var(--secondary-red);
+		box-sizing: border-box;
+		border-radius: 8px;
+		font-size: 12px;
+		padding: 0px 16px;
+	}
+
+	@media only screen and (max-width: 1000px) {
+		.auth-form .form {
+			max-width: 50%;
+		}
+	}
+
+	.btn {
+		height: 32px;
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 8px;
+
+		padding: 0px 8px;
+		font-size: 12px;
+		font-weight: 600;
+
+		background-color: var(--primary-blue);
+		border-radius: 8px;
+		border: none;
+
+		color: var(--complementary-white);
+
+		cursor: pointer;
+
+		transition: 0.3s;
+	}
+
+	.btn:hover {
+		opacity: 0.9;
+	}
+
+	@media only screen and (max-width: 900px) {
+		.auth-form {
+			width: 100%;
+			right: 0;
+		}
+
+		.auth-form .form {
+			max-width: 70%;
+		}
+	}
+</style>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coldwire</title>
+  
+  <link rel="stylesheet" href="/static/main.css">
+</head>
+  
+<body>
+  <img class="logo" src="/static/img/logo.svg" />
+  {{embed}}
+  <a class="artist" href="https://unsplash.com/photos/XM1YUUVXj64" target="_blank">Artwork by @pawel_czerwinski - unsplash.com</a>
+  <div class="background"></div>
+</body>
+
+<style>
+  .background {
+		background: no-repeat center url(/static/img/background.jpg);
+		background-size: cover;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+
+    z-index: -1;
+	}
+
+  .logo {
+		position: absolute;
+		top: 24px;
+		left: 32px;
+		width: 30px;
+	}
+
+  .artist {
+		position: absolute;
+		bottom: 32px;
+		left: 32px;
+		font-size: 10px;
+		user-select: none;
+
+		color: var(--complementary-white);
+		text-decoration: none;
+		padding: 8px;
+		background-color: var(--complementary-white-25);
+		border-radius: 8px;
+	}
+</style>
+
+</html>
