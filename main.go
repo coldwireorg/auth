@@ -28,7 +28,7 @@ func main() {
 		Views: engine,
 	})
 
-	database.Connect()
+	go database.Connect()
 
 	// Generate JWT signin keys
 	tokens.GenerateKeys()

@@ -1,8 +1,8 @@
 <div class="auth-form">
   {{ if .Register }}
-  	<form class="form" method="post" action="/api/register">
+  	<form class="form" method="post" action="/api/register?login_challenge={{ .Challenge }}">
   {{ else }}
-    <form class="form" method="post" action="/api/login">
+    <form class="form" method="post" action="/api/login?login_challenge={{ .Challenge }}">
   {{end}}
 		<div class="top">
 			<img src="/static/img/icons/lock.svg" width="16px" height="16px" alt=""> Make sure your connection is safe
@@ -24,7 +24,7 @@
     <input type="password" placeholder="Password" name="password" />
 
     {{ if .Register }}
-      <input type="password" placeholder="Oassword" name="repassword" />
+      <input type="password" placeholder="Password" name="repassword" />
     {{end}}
 
     <div class="submit">
@@ -35,9 +35,9 @@
       {{end}}
 			<p>
         {{ if .Register }}
-          Already have an account? <a href="/sign-in">Sign in</a>!
+          Already have an account? <a href="/sign-in?login_challenge={{ .Challenge }}">Sign in</a>!
         {{ else }}
-          You don't have an account yet? <a href="/sign-up">Create one</a>!
+          You don't have an account yet? <a href="/sign-up?login_challenge={{ .Challenge }}">Create one</a>!
         {{end}}
 			</p>
 		</div>

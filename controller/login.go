@@ -2,13 +2,12 @@ package controller
 
 import (
 	"auth/models"
-	"auth/utils"
-	"auth/utils/cwcrypto"
-	"auth/utils/cwcrypto/chacha20"
 	"auth/utils/errors"
-	"auth/utils/tokens"
-	"os"
-	"time"
+	"context"
+
+	"auth/hydra"
+
+	h "github.com/ory/hydra-client-go"
 
 	"github.com/alexedwards/argon2id"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -18,6 +17,11 @@ import (
 func Login(c *fiber.Ctx) error {
 	username := c.FormValue("username")
 	password := c.FormValue("password")
+	challenge := c.Query("login_challenge")
+
+	if challenge == "" {
+		return fiber.ErrBadRequest
+	}
 
 	user := models.User{
 		Username: username,
@@ -45,21 +49,24 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	// Decrypt private key with password
-	privateKey, err := chacha20.Decrypt(user.PrivateKey, cwcrypto.DeriveKey([]byte(password)))
+	// Now sending the encrypted one, decryption will happen on the client side :)
+	/*	privateKey, err := chacha20.Decrypt(user.PrivateKey, cwcrypto.DeriveKey([]byte(password)))
+		if err != nil {
+			return errors.HandleError(c, errors.ErrInternal, "sign-in")
+		} */
+
+	acceptLoginRequest := h.NewAcceptLoginRequest(username)
+
+	acceptLoginRequest.SetRemember(true)
+	acceptLoginRequest.SetContext(fiber.Map{
+		"username": username,
+		"pvkey":    hexutil.Encode(user.PrivateKey),
+	})
+
+	resp, _, err := hydra.HydraAdminClient.AdminApi.AcceptLoginRequest(context.Background()).LoginChallenge(challenge).AcceptLoginRequest(*acceptLoginRequest).Execute()
 	if err != nil {
-		return errors.HandleError(c, errors.ErrInternal, "sign-in")
+		return err
 	}
 
-	exp := time.Hour * 2
-	jwt := tokens.Generate(username, hexutil.Encode(privateKey), exp) // Generate JWT token
-
-	// set cookies
-	c.Cookie(utils.GenCookie("token", jwt, exp, os.Getenv("SERVER_DOMAIN")))
-	// if user use tor browser
-	if c.Hostname() == os.Getenv("TOR_ADDRESS") {
-		c.Cookie(utils.GenCookie("token", jwt, exp, os.Getenv("TOR_ADDRESS")))
-	}
-
-	// Return login informations
-	return c.Redirect("/user/" + username)
+	return c.Redirect(resp.RedirectTo)
 }
