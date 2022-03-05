@@ -3,12 +3,13 @@ package hydra
 import (
 	"crypto/tls"
 	"net/http"
+	"os"
 
 	hydra "github.com/ory/hydra-client-go"
 )
 
 var (
-	HydraAdminURL    = "127.0.0.1:4445"
+	HydraAdminURL    = os.Getenv("HYDRA_ADMIN_URL")
 	HydraAdminClient = NewHydraClient(HydraAdminURL)
 )
 

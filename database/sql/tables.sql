@@ -1,5 +1,5 @@
-SELECT 'CREATE DATABASE cwauth ENCODING ''UTF8'''
-WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'cwauth')\gexec
+SELECT 'CREATE DATABASE auth ENCODING ''UTF8'''
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'auth')\gexec
 
 CREATE TABLE IF NOT EXISTS users (
     username    VARCHAR(25) PRIMARY KEY NOT NULL UNIQUE,
