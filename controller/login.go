@@ -10,7 +10,6 @@ import (
 	h "github.com/ory/hydra-client-go"
 
 	"github.com/alexedwards/argon2id"
-	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -48,19 +47,13 @@ func Login(c *fiber.Ctx) error {
 		return errors.HandleError(c, errors.ErrAuthPassword, "sign-in")
 	}
 
-	// Decrypt private key with password
-	// Now sending the encrypted one, decryption will happen on the client side :)
-	/*	privateKey, err := chacha20.Decrypt(user.PrivateKey, cwcrypto.DeriveKey([]byte(password)))
-		if err != nil {
-			return errors.HandleError(c, errors.ErrInternal, "sign-in")
-		} */
-
 	acceptLoginRequest := h.NewAcceptLoginRequest(username)
 
 	acceptLoginRequest.SetRemember(true)
 	acceptLoginRequest.SetContext(fiber.Map{
 		"username": username,
-		"pvkey":    hexutil.Encode(user.PrivateKey),
+		"pvkey":    user.PrivateKey,
+		"pbkey":    user.PublicKey,
 	})
 
 	resp, _, err := hydra.HydraAdminClient.AdminApi.AcceptLoginRequest(context.Background()).LoginChallenge(challenge).AcceptLoginRequest(*acceptLoginRequest).Execute()

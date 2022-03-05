@@ -12,8 +12,8 @@ import (
 type User struct {
 	Username   string `db:"username"`
 	Password   string `db:"password"`
-	PublicKey  []byte `db:"public_key"`
-	PrivateKey []byte `db:"private_key"`
+	PublicKey  string `db:"public_key"`
+	PrivateKey string `db:"private_key"`
 }
 
 func (user User) Exist() bool {

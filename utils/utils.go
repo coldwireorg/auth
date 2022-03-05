@@ -1,32 +1,21 @@
 package utils
 
 import (
-	"log"
-	"os"
-	"strconv"
-	"time"
-
-	"github.com/gofiber/fiber/v2"
+	"crypto/rand"
+	"encoding/base64"
+	"math/big"
 )
 
-func GenCookie(name string, value string, exp time.Duration, domain string) *fiber.Cookie {
-	serverHTTPS, err := strconv.ParseBool(os.Getenv("SERVER_HTTPS"))
-	if err != nil {
-		log.Fatalln("Set SERVER_HTTPS as true or false please")
+func GenerateRandomString(n int) (string, error) {
+	const letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-"
+	ret := make([]byte, n)
+	for i := 0; i < n; i++ {
+		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(letters))))
+		if err != nil {
+			return "", err
+		}
+		ret[i] = letters[num.Int64()]
 	}
 
-	return &fiber.Cookie{
-		Name:     name,
-		Value:    value,
-		SameSite: "strict",
-		Secure:   serverHTTPS,
-		HTTPOnly: true,
-		Expires:  time.Now().Add(exp),
-		Domain:   domain,
-	}
-}
-
-func GetQuota() int {
-	i, _ := strconv.Atoi(os.Getenv("STORAGE_QUOTA"))
-	return (i * 1024 * 1024)
+	return base64.URLEncoding.EncodeToString(ret), nil
 }

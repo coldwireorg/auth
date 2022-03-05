@@ -1,24 +1,30 @@
 package controller
 
 import (
+	"auth/hydra"
 	"auth/models"
-	"auth/utils"
-	"auth/utils/cwcrypto"
-	"auth/utils/cwcrypto/chacha20"
+
 	"auth/utils/errors"
-	"auth/utils/tokens"
+	"context"
 	"log"
-	"os"
-	"time"
 
 	"github.com/alexedwards/argon2id"
-	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/gofiber/fiber/v2"
+	h "github.com/ory/hydra-client-go"
 )
 
 func Register(c *fiber.Ctx) error {
 	username := c.FormValue("username")
 	password := c.FormValue("password")
+
+	pvkey := c.FormValue("pvkey")
+	pbkey := c.FormValue("pbkey")
+
+	challenge := c.Query("login_challenge")
+
+	if challenge == "" {
+		return fiber.ErrBadRequest
+	}
 
 	user := models.User{
 		Username: username,
@@ -42,45 +48,29 @@ func Register(c *fiber.Ctx) error {
 		return errors.HandleError(c, errors.ErrInternal, "sign-up")
 	}
 
-	// Generate user's keypair
-	pvkey, pbkey, err := cwcrypto.GenerateKeys()
-	if err != nil {
-		return c.SendString(err.Error())
-	}
-
-	// Encode keys to store them
-	encodedPvkey, encodedPbkey, err := cwcrypto.Encode(pvkey, pbkey)
-	if err != nil {
-		return errors.HandleError(c, errors.ErrInternal, "sign-up")
-	}
-
-	// Encrypt private key with user's password wich is derived using Argon2i
-	pvKeyEncryptionKey := cwcrypto.DeriveKey([]byte(password))
-	encryptedPvkey, err := chacha20.Encrypt(encodedPvkey, pvKeyEncryptionKey)
-	if err != nil {
-		return errors.HandleError(c, errors.ErrInternal, "sign-up")
-	}
-
 	// Set user data
 	user.Password = hash
-	user.PublicKey = encodedPbkey
-	user.PrivateKey = encryptedPvkey
+	user.PrivateKey = pvkey
+	user.PublicKey = pbkey
 
 	err = user.Create()
 	if err != nil {
 		return errors.HandleError(c, errors.ErrDatabaseCreate, "sign-up")
 	}
 
-	exp := time.Hour * 2                                                // define token expiration
-	jwt := tokens.Generate(username, hexutil.Encode(encodedPvkey), exp) // Generate JWT token
+	acceptLoginRequest := h.NewAcceptLoginRequest(username)
 
-	// Set cookies
-	c.Cookie(utils.GenCookie("token", jwt, exp, os.Getenv("SERVER_DOMAIN")))
-	// If the user use TOR, set the cookies on the tor address
-	if c.Hostname() == os.Getenv("TOR_ADDRESS") {
-		c.Cookie(utils.GenCookie("token", jwt, exp, os.Getenv("TOR_ADDRESS")))
+	acceptLoginRequest.SetRemember(true)
+	acceptLoginRequest.SetContext(fiber.Map{
+		"username": username,
+		"pvkey":    user.PrivateKey,
+		"pbkey":    user.PublicKey,
+	})
+
+	resp, _, err := hydra.HydraAdminClient.AdminApi.AcceptLoginRequest(context.Background()).LoginChallenge(challenge).AcceptLoginRequest(*acceptLoginRequest).Execute()
+	if err != nil {
+		return err
 	}
 
-	// Return login informations
-	return c.Redirect("/user/" + username)
+	return c.Redirect(resp.RedirectTo)
 }
