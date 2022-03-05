@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/alexedwards/argon2id v0.0.0-20211130144151-3585854a6387
-	github.com/ethereum/go-ethereum v1.10.15
+	github.com/ethereum/go-ethereum v1.10.16
 	github.com/georgysavva/scany v0.3.0
 	github.com/gofiber/fiber/v2 v2.25.0
 	github.com/gofiber/template v1.6.21
