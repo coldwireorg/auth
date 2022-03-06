@@ -33,7 +33,7 @@ func main() {
 
 	go oauth.InitOauth2(oauth2.Config{
 		ClientID:    "auth",
-		RedirectURL: "http://" + os.Getenv("DOMAIN") + "/api/callback",
+		RedirectURL: os.Getenv("AUTH_SERVER_URL") + "/api/callback",
 		Scopes:      []string{oidc.ScopeOpenID, "profile"},
 	})
 

@@ -2,7 +2,9 @@ package oauth
 
 import (
 	"context"
+	"crypto/tls"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -20,7 +22,14 @@ func InitOauth2(conf oauth2.Config) error {
 	var err error
 
 	for {
-		Provider, err = oidc.NewProvider(context.Background(), os.Getenv("HYDRA_PUBLIC_URL"))
+		ctx := oidc.ClientContext(context.Background(), &http.Client{
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			},
+			Timeout: 0,
+		})
+
+		Provider, err = oidc.NewProvider(ctx, os.Getenv("HYDRA_PUBLIC_URL"))
 		if err != nil {
 			log.Println(err)
 			time.Sleep(15 * time.Second)
