@@ -5,12 +5,10 @@ import (
 	"auth/models"
 
 	"auth/utils/errors"
-	"context"
 	"log"
 
 	"github.com/alexedwards/argon2id"
 	"github.com/gofiber/fiber/v2"
-	h "github.com/ory/hydra-client-go"
 )
 
 func Register(c *fiber.Ctx) error {
@@ -58,19 +56,15 @@ func Register(c *fiber.Ctx) error {
 		return errors.HandleError(c, errors.ErrDatabaseCreate, "sign-up")
 	}
 
-	acceptLoginRequest := h.NewAcceptLoginRequest(username)
-
-	acceptLoginRequest.SetRemember(true)
-	acceptLoginRequest.SetContext(fiber.Map{
+	redirect, err := hydra.Login(username, challenge, map[string]interface{}{
 		"username": username,
 		"pvkey":    user.PrivateKey,
 		"pbkey":    user.PublicKey,
 	})
 
-	resp, _, err := hydra.HydraAdminClient.AdminApi.AcceptLoginRequest(context.Background()).LoginChallenge(challenge).AcceptLoginRequest(*acceptLoginRequest).Execute()
 	if err != nil {
-		return err
+		log.Println(err)
 	}
 
-	return c.Redirect(resp.RedirectTo)
+	return c.Redirect(redirect)
 }

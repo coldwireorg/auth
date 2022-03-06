@@ -2,6 +2,8 @@ package main
 
 import (
 	"auth/database"
+	"auth/hydra"
+	"auth/oauth2"
 	"auth/router"
 	"log"
 	"os"
@@ -27,6 +29,8 @@ func main() {
 		Views: engine,
 	})
 
+	oauth2.InitOauth2()
+	hydra.NewHydraClient(os.Getenv("HYDRA_ADMIN_URL"))
 	go database.Connect()
 
 	app.Use(cors.New()) // Add cors
