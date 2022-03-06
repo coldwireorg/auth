@@ -2,8 +2,11 @@ package controller
 
 import (
 	"auth/models"
+	"auth/utils"
 	"auth/utils/errors"
+	"encoding/json"
 	"log"
+	"time"
 
 	"auth/hydra"
 
@@ -45,15 +48,21 @@ func Login(c *fiber.Ctx) error {
 		return errors.HandleError(c, errors.ErrAuthPassword, "sign-in")
 	}
 
-	redirect, err := hydra.Login(username, challenge, map[string]interface{}{
-		"username": username,
-		"pvkey":    user.PrivateKey,
-		"pbkey":    user.PublicKey,
-	})
-
+	redirect, err := hydra.Login(username, challenge)
 	if err != nil {
 		log.Println(err)
 	}
+
+	ctx, err := json.Marshal(map[string]interface{}{
+		"username":    username,
+		"private_key": user.PrivateKey,
+		"public_key":  user.PublicKey,
+	})
+	if err != nil {
+		log.Println(err)
+	}
+
+	utils.SetCookie(c, "ctx", string(ctx), time.Now().Add(time.Second*30))
 
 	return c.Redirect(redirect)
 }

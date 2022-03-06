@@ -6,7 +6,7 @@ import (
 	h "github.com/ory/hydra-client-go"
 )
 
-func Consent(challenge string) (string, error) {
+func Consent(challenge string, payload map[string]interface{}) (string, error) {
 	acceptConsentRequest := h.NewAcceptConsentRequest()
 
 	acceptConsentRequest.SetRemember(true)
@@ -16,12 +16,7 @@ func Consent(challenge string) (string, error) {
 	})
 
 	consentRequestSession := h.NewConsentRequestSession()
-	consentRequestSession.SetIdToken(map[string]interface{}{
-		"username":   "monoko",
-		"email":      "monoko@coldwire.org",
-		"privateKey": "privateKey",
-		"publicKey":  "publicKey",
-	})
+	consentRequestSession.SetIdToken(payload)
 	acceptConsentRequest.SetSession(*consentRequestSession)
 
 	resp, _, err := Client.AdminApi.AcceptConsentRequest(context.Background()).ConsentChallenge(challenge).AcceptConsentRequest(*acceptConsentRequest).Execute()

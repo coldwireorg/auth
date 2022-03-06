@@ -1,8 +1,10 @@
 package controller
 
 import (
-	"auth/oauth2"
+	"auth/oauth"
+	"auth/utils"
 	"log"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -10,7 +12,12 @@ import (
 func Callback(c *fiber.Ctx) error {
 	code := c.Query("code")
 
-	claims := oauth2.Callback(code)
+	idToken, accessToken := oauth.Callback(code)
+
+	utils.SetCookie(c, "id_token", idToken, time.Now().Add(time.Hour*6))
+	utils.SetCookie(c, "access_token", accessToken, time.Now().Add(time.Hour*6))
+
+	claims := oauth.GetClaims(idToken)
 	log.Println(claims)
 
 	return c.Redirect("/user")

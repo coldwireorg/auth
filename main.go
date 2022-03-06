@@ -3,15 +3,17 @@ package main
 import (
 	"auth/database"
 	"auth/hydra"
-	"auth/oauth2"
+	"auth/oauth"
 	"auth/router"
 	"log"
 	"os"
 
+	"github.com/coreos/go-oidc"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/template/html"
 	"github.com/joho/godotenv"
+	"golang.org/x/oauth2"
 )
 
 func init() {
@@ -29,7 +31,12 @@ func main() {
 		Views: engine,
 	})
 
-	oauth2.InitOauth2()
+	oauth.InitOauth2(oauth2.Config{
+		ClientID:    "auth",
+		RedirectURL: "http://" + os.Getenv("DOMAIN") + "/api/callback",
+		Scopes:      []string{oidc.ScopeOpenID, "profile"},
+	})
+
 	hydra.NewHydraClient(os.Getenv("HYDRA_ADMIN_URL"))
 	go database.Connect()
 
