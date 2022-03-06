@@ -31,13 +31,13 @@ func main() {
 		Views: engine,
 	})
 
-	oauth.InitOauth2(oauth2.Config{
+	go oauth.InitOauth2(oauth2.Config{
 		ClientID:    "auth",
 		RedirectURL: "http://" + os.Getenv("DOMAIN") + "/api/callback",
 		Scopes:      []string{oidc.ScopeOpenID, "profile"},
 	})
 
-	hydra.NewHydraClient(os.Getenv("HYDRA_ADMIN_URL"))
+	go hydra.NewHydraClient(os.Getenv("HYDRA_ADMIN_URL"))
 	go database.Connect()
 
 	app.Use(cors.New()) // Add cors

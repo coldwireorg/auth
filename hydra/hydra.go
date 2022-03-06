@@ -3,13 +3,17 @@ package hydra
 import (
 	"crypto/tls"
 	"net/http"
+	"os"
 
 	hydra "github.com/ory/hydra-client-go"
 )
 
-var Client *hydra.APIClient
+var (
+	HydraAdminURL = os.Getenv("HYDRA_ADMIN_URL")
+	Client        = NewHydraClient(HydraAdminURL)
+)
 
-func NewHydraClient(endpoint string) {
+func NewHydraClient(endpoint string) *hydra.APIClient {
 	configuration := hydra.NewConfiguration()
 
 	configuration.HTTPClient = &http.Client{
@@ -23,5 +27,5 @@ func NewHydraClient(endpoint string) {
 	apiClient.GetConfig().Host = endpoint
 	apiClient.GetConfig().Scheme = "http"
 
-	Client = apiClient
+	return apiClient
 }
