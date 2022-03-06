@@ -30,7 +30,7 @@ func SetupViews(app *fiber.App) {
 		}, "layouts/auth")
 	})
 
-	app.Get("/sign-up", middleware.CheckUser, func(c *fiber.Ctx) error {
+	app.Get("/sign-up", middleware.CheckAuthenticated, func(c *fiber.Ctx) error {
 		err := c.Query("err")
 		challenge := c.Query("login_challenge")
 
