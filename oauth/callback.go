@@ -1,7 +1,6 @@
 package oauth
 
 import (
-	"context"
 	"log"
 )
 
@@ -11,7 +10,7 @@ func Callback(code string) (string, string) {
 		return "", ""
 	}
 
-	oauth2Token, err := Config.Exchange(context.Background(), code)
+	oauth2Token, err := Config.Exchange(Context, code)
 	if err != nil {
 		log.Println(err)
 	}

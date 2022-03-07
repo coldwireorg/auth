@@ -1,7 +1,6 @@
 package oauth
 
 import (
-	"context"
 	"log"
 )
 
@@ -14,7 +13,7 @@ type Claims struct {
 // Check token validity
 func GetClaims(token string) Claims {
 	// Parse and verify ID Token payload.
-	idToken, err := Verifier.Verify(context.Background(), token)
+	idToken, err := Verifier.Verify(Context, token)
 	if err != nil {
 		log.Println(err)
 	}

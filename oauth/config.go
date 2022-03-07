@@ -16,20 +16,19 @@ var (
 	Provider *oidc.Provider
 	Verifier *oidc.IDTokenVerifier
 	Config   *oauth2.Config
+	Context  = oidc.ClientContext(context.Background(), &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		},
+		Timeout: 0,
+	})
 )
 
 func InitOauth2(conf oauth2.Config) error {
 	var err error
 
 	for {
-		ctx := oidc.ClientContext(context.Background(), &http.Client{
-			Transport: &http.Transport{
-				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-			},
-			Timeout: 0,
-		})
-
-		Provider, err = oidc.NewProvider(ctx, os.Getenv("HYDRA_PUBLIC_URL"))
+		Provider, err = oidc.NewProvider(Context, os.Getenv("HYDRA_PUBLIC_URL"))
 		if err != nil {
 			log.Println(err)
 			time.Sleep(15 * time.Second)

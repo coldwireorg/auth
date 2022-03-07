@@ -40,14 +40,13 @@ func (user User) Create() error {
 }
 
 func (user User) Get() (User, error) {
-	var usr User
-	err := pgxscan.Get(context.Background(), database.DB, &usr, `SELECT * FROM users WHERE username = $1`, user.Username)
+	err := pgxscan.Get(context.Background(), database.DB, &user, `SELECT * FROM users WHERE username = $1`, user.Username)
 	if err != nil {
 		log.Println(err.Error())
 		return User{}, err
 	}
 
-	return usr, nil
+	return user, nil
 }
 
 func (user User) Pubkey() ([]byte, error) {
