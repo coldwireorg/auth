@@ -5,7 +5,6 @@ import (
 	"crypto/tls"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -22,13 +21,15 @@ var (
 		},
 		Timeout: 0,
 	})
+	Address *string
 )
 
-func InitOauth2(conf oauth2.Config) error {
+func InitOauth2(conf oauth2.Config, url string) error {
 	var err error
 
 	for {
-		Provider, err = oidc.NewProvider(Context, os.Getenv("HYDRA_PUBLIC_URL"))
+		Address = &url
+		Provider, err = oidc.NewProvider(Context, *Address)
 		if err != nil {
 			log.Println(err)
 			time.Sleep(15 * time.Second)

@@ -9,8 +9,7 @@ import (
 )
 
 var (
-	HydraAdminURL = os.Getenv("HYDRA_ADMIN_URL")
-	Client        = NewHydraClient(HydraAdminURL)
+	Client = NewHydraClient(os.Getenv("HYDRA_ADMIN_URL"))
 )
 
 func NewHydraClient(endpoint string) *hydra.APIClient {

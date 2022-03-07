@@ -35,7 +35,7 @@ func main() {
 		ClientID:    "auth",
 		RedirectURL: os.Getenv("AUTH_SERVER_URL") + "/api/callback",
 		Scopes:      []string{oidc.ScopeOpenID, "profile"},
-	})
+	}, os.Getenv("HYDRA_PUBLIC_URL"))
 
 	go hydra.NewHydraClient(os.Getenv("HYDRA_ADMIN_URL"))
 	go database.Connect()
