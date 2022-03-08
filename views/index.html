@@ -1,6 +1,22 @@
+<script>
+  async function register() {
+    const form = document.querySelector(".form")
+    const pvkey = document.querySelector("#pvkey")
+    const pbkey = document.querySelector("#pbkey")
+    const password = document.querySelector("#password")
+
+    let keys = await oxyd.generate(password.value)
+
+    pvkey.value = keys.privateKey
+    pbkey.value = keys.publicKey
+
+    form.submit()
+  }
+</script>
+
 <div class="auth-form">
   {{ if .Register }}
-  	<form class="form" method="post" action="/api/register?login_challenge={{ .Challenge }}">
+  	<form class="form" method="post" action="/api/register?login_challenge={{ .Challenge }}" onsubmit="event.preventDefault(); register();">
   {{ else }}
     <form class="form" method="post" action="/api/login?login_challenge={{ .Challenge }}">
   {{end}}
@@ -21,15 +37,17 @@
     {{end}}
 
 		<input type="text" placeholder="Username" name="username" />
-    <input type="password" placeholder="Password" name="password" />
+    <input type="password" placeholder="Password" name="password" id="password" />
 
     {{ if .Register }}
       <input type="password" placeholder="Password" name="repassword" />
+      <input type="hidden" name="pvkey" id="pvkey" />
+      <input type="hidden" name="pbkey" id="pbkey" />
     {{end}}
 
     <div class="submit">
       {{ if .Register }}
-  			<input class="btn" type="submit" value="Register" />
+  			<input class="btn" type="submit" value="Register" onsubmit="event.preventDefault(); register();" />
       {{ else }}
   			<input class="btn" type="submit" value="Login" />
       {{end}}

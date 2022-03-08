@@ -8,6 +8,41 @@
 
   <link rel="stylesheet" href="https://static.coldwire.org/css/main.css">
   <link rel="stylesheet" href="/static/main.css">
+
+  <script src="https://static.coldwire.org/js/oxyd/oxyd.js"></script>
+  <script>
+    const { ecies_generate_keypair, ecies_encrypt, ecies_decrypt, chacha20_encrypt } = wasm_bindgen
+
+    async function run() {
+      await wasm_bindgen('https://static.coldwire.org/js/oxyd/oxyd_bg.wasm')
+    }
+
+    const oxyd = {
+      utils: {
+        u8ToBase64 (u8) {
+          return btoa(String.fromCharCode.apply(null, u8));
+        },
+
+        base64ToU8 (str) {
+          return atob(str).split('').map(function (c) { return c.charCodeAt(0); });
+        }
+      },
+
+      generate (password) {
+        const [sk, pk] = ecies_generate_keypair()
+        const decoder = new TextDecoder()
+
+        const pwd = new TextEncoder().encode(password)
+
+        return {
+          publicKey: this.utils.u8ToBase64(pk),
+          privateKey: this.utils.u8ToBase64(chacha20_encrypt(sk, pwd))
+        }
+      }
+    }
+
+    run()
+  </script>
 </head>
 
 <body>

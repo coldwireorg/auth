@@ -15,5 +15,5 @@ func SetupApi(app *fiber.App) {
 	api.Get("/consent", controller.Consent)
 	api.Get("/callback", controller.Callback)
 
-	api.Get("/pubkey/:username?", controller.Pubkey)
+	api.Get("/pubkey/:username", controller.Pubkey)
 }
