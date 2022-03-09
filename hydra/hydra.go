@@ -1,18 +1,19 @@
 package hydra
 
 import (
+	"context"
 	"crypto/tls"
+	"log"
 	"net/http"
-	"os"
 
 	hydra "github.com/ory/hydra-client-go"
 )
 
 var (
-	Client = NewHydraClient(os.Getenv("HYDRA_ADMIN_URL"))
+	Client *hydra.APIClient
 )
 
-func NewHydraClient(endpoint string) *hydra.APIClient {
+func Connect(endpoint string) bool {
 	configuration := hydra.NewConfiguration()
 
 	configuration.HTTPClient = &http.Client{
@@ -26,5 +27,15 @@ func NewHydraClient(endpoint string) *hydra.APIClient {
 	apiClient.GetConfig().Host = endpoint
 	apiClient.GetConfig().Scheme = "http"
 
-	return apiClient
+	for {
+		resp, _, err := apiClient.MetadataApi.IsReady(context.Background()).ApiService.IsAlive(context.Background()).Execute()
+
+		if resp.GetStatus() == "ok" && err == nil {
+			log.Println("Connected to hydra!")
+			Client = &hydra.APIClient{}
+			return true
+		} else {
+			log.Println(err.Error())
+		}
+	}
 }

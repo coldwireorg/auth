@@ -5,6 +5,8 @@ import (
 	"auth/hydra"
 	"auth/oauth"
 	"auth/router"
+	"auth/utils/config"
+	"auth/utils/env"
 	"log"
 	"os"
 
@@ -23,6 +25,8 @@ func init() {
 	} else {
 		log.Println("Loaded env values successfully")
 	}
+
+	go database.Connect()
 }
 
 func main() {
@@ -31,27 +35,30 @@ func main() {
 		Views: engine,
 	})
 
-	go oauth.InitOauth2(oauth2.Config{
-		ClientID:    "auth",
-		RedirectURL: os.Getenv("AUTH_SERVER_URL") + "/api/callback",
-		Scopes:      []string{oidc.ScopeOpenID, "profile"},
-	}, os.Getenv("HYDRA_PUBLIC_URL"))
-
-	go hydra.NewHydraClient(os.Getenv("HYDRA_ADMIN_URL"))
-	go database.Connect()
-
 	app.Use(cors.New()) // Add cors
 	app.Static("/static", "./static")
 
 	router.SetupViews(app)
 	router.SetupApi(app)
 
-	listener := os.Getenv("SERVER_HOST") + ":" + os.Getenv("SERVER_PORT")
-	err := app.Listen(listener)
-	if err != nil {
-		log.Println("Unable to start server on [" + listener + "]")
-		panic(err)
-	} else {
-		log.Println("Listening on [" + listener + "]")
+	isReady := hydra.Connect(os.Getenv("HYDRA_ADMIN_URL"))
+
+	if isReady {
+		config.Load(env.Get("CLIENTS_CONFIG", "./clients.toml"))
+
+		go oauth.InitOauth2(oauth2.Config{
+			ClientID:    "auth",
+			RedirectURL: os.Getenv("AUTH_SERVER_URL") + "/api/callback",
+			Scopes:      []string{oidc.ScopeOpenID},
+		}, os.Getenv("HYDRA_PUBLIC_URL"))
+
+		listener := os.Getenv("SERVER_HOST") + ":" + os.Getenv("SERVER_PORT")
+		err := app.Listen(listener)
+		if err != nil {
+			log.Println("Unable to start server on [" + listener + "]")
+			panic(err)
+		} else {
+			log.Println("Listening on [" + listener + "]")
+		}
 	}
 }

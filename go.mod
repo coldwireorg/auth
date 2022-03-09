@@ -3,6 +3,7 @@ module auth
 go 1.17
 
 require (
+	github.com/BurntSushi/toml v0.3.1
 	github.com/alexedwards/argon2id v0.0.0-20211130144151-3585854a6387
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/coreos/go-oidc/v3 v3.1.0
@@ -17,7 +18,6 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
-	github.com/fatih/structs v1.1.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.11.0 // indirect
