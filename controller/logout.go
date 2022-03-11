@@ -1,17 +1,17 @@
 package controller
 
 import (
-	"auth/hydra"
 	"auth/utils"
 	"log"
 
+	"codeberg.org/coldwire/cwhydra"
 	"github.com/gofiber/fiber/v2"
 )
 
 func Logout(c *fiber.Ctx) error {
 	challenge := c.Query("logout_challenge")
 
-	redirect, err := hydra.Logout(challenge)
+	redirect, err := cwhydra.LogoutManager(*cwhydra.AdminApi).Accept(challenge)
 	if err != nil {
 		log.Println(err)
 	}

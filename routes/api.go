@@ -1,13 +1,16 @@
-package router
+package routes
 
 import (
 	"auth/controller"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
-func SetupApi(app *fiber.App) {
+func Api(app *fiber.App) {
 	api := app.Group("/api")
+
+	app.Use(logger.New())
 
 	api.Post("/register", controller.Register)
 	api.Post("/login", controller.Login)

@@ -1,4 +1,6 @@
 #/bin/sh
+
+# Hydra
 export DSN=sqlite:///tmp/db.sqlite?_fk=true
 export SECRETS_SYSTEM=ThisIsJustASuperToken!
 

@@ -1,20 +1,20 @@
-package router
+package routes
 
 import (
 	"auth/middleware"
-	"auth/oauth"
 	"log"
 
+	"codeberg.org/coldwire/cwauth"
 	"github.com/gofiber/fiber/v2"
 )
 
-func SetupViews(app *fiber.App) {
+func View(app *fiber.App) {
 	app.Get("/", middleware.CheckAuthenticated, func(c *fiber.Ctx) error {
 		return c.Redirect("/sign-in")
 	})
 
 	app.Get("/logout", func(c *fiber.Ctx) error {
-		return c.Redirect(oauth.LogoutURL())
+		return c.Redirect(cwauth.LogoutURL())
 	})
 
 	app.Get("/sign-in", middleware.CheckAuthenticated, func(c *fiber.Ctx) error {

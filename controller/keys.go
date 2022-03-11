@@ -10,7 +10,7 @@ func Pubkey(c *fiber.Ctx) error {
 	username := c.Params("username")
 
 	user := models.User{
-		Username: username,
+		Name: username,
 	}
 
 	key, err := user.Pubkey()

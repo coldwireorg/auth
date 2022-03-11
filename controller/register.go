@@ -1,15 +1,11 @@
 package controller
 
 import (
-	"auth/hydra"
 	"auth/models"
-	"auth/utils"
-	"encoding/json"
-	"time"
 
 	"auth/utils/errors"
-	"log"
 
+	"codeberg.org/coldwire/cwhydra"
 	"github.com/alexedwards/argon2id"
 	"github.com/gofiber/fiber/v2"
 )
@@ -28,7 +24,7 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	user := models.User{
-		Username: username,
+		Name: username,
 	}
 
 	// Verify that the username is not empty or too short
@@ -38,7 +34,6 @@ func Register(c *fiber.Ctx) error {
 
 	// Verify if the user already exist
 	exist := user.Exist()
-	log.Println(exist)
 	if exist {
 		return errors.HandleError(c, errors.ErrAuthExist, "sign-up")
 	}
@@ -50,6 +45,7 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	// Set user data
+	user.Group = "user"
 	user.Password = hash
 	user.PrivateKey = pvkey
 	user.PublicKey = pbkey
@@ -59,21 +55,19 @@ func Register(c *fiber.Ctx) error {
 		return errors.HandleError(c, errors.ErrDatabaseCreate, "sign-up")
 	}
 
-	redirect, err := hydra.Login(username, challenge)
-	if err != nil {
-		log.Println(err)
-	}
-
-	ctx, err := json.Marshal(map[string]interface{}{
-		"username": username,
-		"pvkey":    user.PrivateKey,
-		"pbkey":    user.PublicKey,
+	redirect, err := cwhydra.LoginManager(*cwhydra.AdminApi).Accept(challenge, cwhydra.AcceptLoginRequest{
+		Subject: username,
+		Context: map[string]interface{}{
+			"username":    username,
+			"role":        user.Group,
+			"private_key": user.PrivateKey,
+			"public_key":  user.PublicKey,
+		},
+		Remember: true,
 	})
 	if err != nil {
-		log.Println(err)
+		return errors.HandleError(c, errors.ErrInternal, "sign-up")
 	}
-
-	utils.SetCookie(c, "ctx", string(ctx), time.Now().Add(time.Second*30))
 
 	return c.Redirect(redirect)
 }

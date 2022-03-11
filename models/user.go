@@ -2,59 +2,54 @@ package models
 
 import (
 	"auth/database"
-	"context"
-	"log"
-
-	"github.com/georgysavva/scany/pgxscan"
-	"github.com/jackc/pgx/v4"
 )
 
 type User struct {
-	Username   string `db:"username"`
-	Password   string `db:"password"`
-	PublicKey  string `db:"public_key"`
-	PrivateKey string `db:"private_key"`
+	Name       string `gorm:"not null;unique;primaryKey"`
+	Password   string `gorm:"not null"`
+	Group      string `gorm:"not null"`
+	PrivateKey string `gorm:"not null"`
+	PublicKey  string `gorm:"not null"`
 }
 
-func (user User) Exist() bool {
-	usr, err := user.Get()
-	if err == pgx.ErrNoRows {
+func (u User) Create() error {
+	return database.DB.Create(&u).Error
+}
+
+func (u User) Delete() error {
+	return database.DB.Delete(&u).Error
+}
+
+func (u User) Find() (User, error) {
+	var usr User
+	err := database.DB.Model(&u).Find(&usr).Error
+	if err != nil {
+		return User{}, err
+	}
+
+	return usr, nil
+}
+
+func (u User) Exist() bool {
+	var usr User
+	err := database.DB.Model(&u).Find(&usr).Error
+	if err != nil {
 		return false
 	}
 
-	if usr.Username == user.Username {
+	if usr.Name != "" {
 		return true
 	}
 
 	return false
 }
 
-func (user User) Create() error {
-	_, err := database.DB.Exec(context.Background(), `INSERT INTO users(username, password, public_key, private_key) VALUES($1, $2, $3, $4)`, user.Username, user.Password, user.PublicKey, user.PrivateKey)
+func (user User) Pubkey() (string, error) {
+	var pubkey string
+
+	err := database.DB.Select("PublicKey").Find(&user).Scan(&pubkey).Error
 	if err != nil {
-		log.Println(err.Error())
-		return err
-	}
-
-	return nil
-}
-
-func (user User) Get() (User, error) {
-	err := pgxscan.Get(context.Background(), database.DB, &user, `SELECT * FROM users WHERE username = $1`, user.Username)
-	if err != nil {
-		log.Println(err.Error())
-		return User{}, err
-	}
-
-	return user, nil
-}
-
-func (user User) Pubkey() ([]byte, error) {
-	var pubkey []byte
-	err := pgxscan.Get(context.Background(), database.DB, &pubkey, `SELECT public_key FROM users WHERE username = $1`, user.Username)
-	if err != nil {
-		log.Println(err.Error())
-		return nil, err
+		return "", err
 	}
 
 	return pubkey, nil

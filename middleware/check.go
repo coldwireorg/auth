@@ -1,9 +1,9 @@
 package middleware
 
 import (
-	"auth/oauth"
 	"log"
 
+	"codeberg.org/coldwire/cwauth"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -15,7 +15,7 @@ func CheckAuthenticated(c *fiber.Ctx) error {
 	csrf := c.Cookies("oauth2_authentication_csrf")
 	csrfInsecure := c.Cookies("oauth2_authentication_csrf_insecure")
 
-	isTokenValide := oauth.CheckToken(idToken, accesToken)
+	isTokenValide := cwauth.CheckToken(idToken, accesToken)
 	if isTokenValide {
 		return c.Redirect("/user")
 	}
@@ -24,7 +24,7 @@ func CheckAuthenticated(c *fiber.Ctx) error {
 		return c.Next()
 	}
 
-	url, err := oauth.AuthURL()
+	url, err := cwauth.AuthURL()
 	if err != nil {
 		log.Println(err)
 	}
@@ -36,10 +36,9 @@ func CheckUser(c *fiber.Ctx) error {
 	idToken := c.Cookies("id_token")
 	accesToken := c.Cookies("access_token")
 
-	isTokenValide := oauth.CheckToken(idToken, accesToken)
-	log.Print(isTokenValide)
+	isTokenValide := cwauth.CheckToken(idToken, accesToken)
 	if !isTokenValide {
-		url, err := oauth.AuthURL()
+		url, err := cwauth.AuthURL()
 		if err != nil {
 			log.Println(err)
 		}

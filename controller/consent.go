@@ -1,32 +1,34 @@
 package controller
 
 import (
-	"auth/hydra"
-	"auth/utils"
-	"encoding/json"
 	"log"
 
+	"codeberg.org/coldwire/cwhydra"
 	"github.com/gofiber/fiber/v2"
 )
 
 func Consent(c *fiber.Ctx) error {
 	challenge := c.Query("consent_challenge")
-	ctx := c.Cookies("ctx")
 
-	var payload map[string]interface{}
-	err := json.Unmarshal([]byte(ctx), &payload)
+	login, err := cwhydra.ConsentManager(*cwhydra.AdminApi).Get(challenge)
 	if err != nil {
-		log.Println(err)
+		log.Fatalln(err)
 	}
 
-	log.Println(payload)
+	redirect, err := cwhydra.ConsentManager(*cwhydra.AdminApi).Accept(challenge, cwhydra.AcceptConsentRequest{
+		GrantScope: []string{
+			"openid",
+			"offline",
+		},
+		Session: cwhydra.ConsentRequestSession{
+			IdToken: login.Context,
+		},
+		Remember: true,
+	})
 
-	redirect, err := hydra.Consent(challenge, payload)
 	if err != nil {
-		log.Println(err)
-		c.Redirect(redirect)
+		log.Fatal(err)
 	}
 
-	utils.DelCookie(c, "ctx")
 	return c.Redirect(redirect)
 }

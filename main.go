@@ -2,63 +2,101 @@ package main
 
 import (
 	"auth/database"
-	"auth/hydra"
-	"auth/oauth"
-	"auth/router"
+	"auth/routes"
+	"auth/utils"
 	"auth/utils/config"
 	"auth/utils/env"
-	"log"
+	"crypto/tls"
+	"flag"
+	"net/http"
 	"os"
 
-	"github.com/coreos/go-oidc"
+	"codeberg.org/coldwire/cwauth"
+	"codeberg.org/coldwire/cwhydra"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/template/html"
-	"github.com/joho/godotenv"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"golang.org/x/oauth2"
 )
 
 func init() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Printf("Unable to load env values: %v\n", err)
-	} else {
-		log.Println("Loaded env values successfully")
-	}
+	// Configure logs
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 
-	go database.Connect()
+	fileConf := flag.String("config", "", "Path to the config file")
+	flag.Parse()
+
+	// Init configuration
+	config.Init(env.Get("CONFIG_FILE", *fileConf))
+
+	// Connect to database
+	database.Connect()
+
+	// Connect to hydra admin api
+	cwhydra.Init(cwhydra.Config{
+		Url: config.Conf.Hydra.Admin,
+		Http: http.Client{
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			},
+			Timeout: 0,
+		},
+	})
+
+	// Connet to hydra public oauth provider
+	cwauth.InitOauth2(oauth2.Config{
+		ClientID:     config.Conf.Oauth.Id,
+		ClientSecret: config.Conf.Oauth.Secret,
+		RedirectURL:  config.Conf.Oauth.Callback,
+	}, config.Conf.Oauth.Server)
 }
 
 func main() {
+	// Create fiber instance
 	engine := html.New("./views", ".html")
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
 
-	app.Use(cors.New()) // Add cors
-	app.Static("/static", "./static")
+	// Add static server
+	app.Static("/static", "static")
 
-	router.SetupViews(app)
-	router.SetupApi(app)
+	// migrate database
+	utils.MigrateTables()
 
-	isReady := hydra.Connect(os.Getenv("HYDRA_ADMIN_URL"))
+	// Include cors
+	app.Use(cors.New())
 
-	if isReady {
-		config.Load(env.Get("CLIENTS_CONFIG", "./clients.toml"))
+	// Setup routes
+	routes.Api(app)
+	routes.View(app)
 
-		go oauth.InitOauth2(oauth2.Config{
-			ClientID:    "auth",
-			RedirectURL: os.Getenv("AUTH_SERVER_URL") + "/api/callback",
-			Scopes:      []string{oidc.ScopeOpenID},
-		}, os.Getenv("HYDRA_PUBLIC_URL"))
-
-		listener := os.Getenv("SERVER_HOST") + ":" + os.Getenv("SERVER_PORT")
-		err := app.Listen(listener)
-		if err != nil {
-			log.Println("Unable to start server on [" + listener + "]")
-			panic(err)
-		} else {
-			log.Println("Listening on [" + listener + "]")
-		}
+	client, err := cwhydra.ClientManager(*cwhydra.AdminApi).List()
+	if err != nil {
+		log.Err(err).Msg(err.Error())
 	}
+
+	// If there is no client
+	if len(client) == 0 {
+		cwhydra.ClientManager(*cwhydra.AdminApi).Create(cwhydra.OAuth2Client{
+			ClientId: "auth",
+			GrantTypes: []string{
+				"authorization_code",
+				"refresh_token",
+			},
+			ResponseTypes: []string{
+				"code",
+				"id_token",
+			},
+			Scope: "openid,offline",
+			RedirectUris: []string{
+				"http://127.0.0.1:3002/api/callback",
+			},
+			TokenEndpointAuthMethod: "none",
+		})
+	}
+
+	log.Info().Err(app.Listen(config.Conf.Server.Address + ":" + config.Conf.Server.Port))
 }

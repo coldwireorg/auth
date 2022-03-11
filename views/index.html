@@ -16,9 +16,9 @@
 
 <div class="auth-form">
   {{ if .Register }}
-  	<form class="form" method="post" action="/api/register?login_challenge={{ .Challenge }}" onsubmit="event.preventDefault(); register();">
+  	<form class="form" method="POST" action="/api/register?login_challenge={{ .Challenge }}" onsubmit="event.preventDefault(); register();">
   {{ else }}
-    <form class="form" method="post" action="/api/login?login_challenge={{ .Challenge }}">
+    <form class="form" method="POST" action="/api/login?login_challenge={{ .Challenge }}">
   {{end}}
 		<div class="top">
 			<img src="/static/img/icons/lock.svg" width="16px" height="16px" alt=""> Make sure your connection is safe

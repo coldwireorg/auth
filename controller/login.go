@@ -2,14 +2,10 @@ package controller
 
 import (
 	"auth/models"
-	"auth/utils"
 	"auth/utils/errors"
-	"encoding/json"
 	"log"
-	"time"
 
-	"auth/hydra"
-
+	"codeberg.org/coldwire/cwhydra"
 	"github.com/alexedwards/argon2id"
 	"github.com/gofiber/fiber/v2"
 )
@@ -24,7 +20,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	user := models.User{
-		Username: username,
+		Name: username,
 	}
 
 	// Verify that the username is not empty
@@ -33,8 +29,12 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	// Get the user
-	user, err := user.Get()
+	user, err := user.Find()
 	if err != nil {
+		return errors.HandleError(c, errors.ErrDatabaseNotFound, "sign-in")
+	}
+
+	if user.Name == "" {
 		return errors.HandleError(c, errors.ErrDatabaseNotFound, "sign-in")
 	}
 
@@ -48,21 +48,35 @@ func Login(c *fiber.Ctx) error {
 		return errors.HandleError(c, errors.ErrAuthPassword, "sign-in")
 	}
 
-	redirect, err := hydra.Login(username, challenge)
-	if err != nil {
-		log.Println(err)
-	}
-
-	ctx, err := json.Marshal(map[string]interface{}{
-		"username":    username,
-		"private_key": user.PrivateKey,
-		"public_key":  user.PublicKey,
+	redirect, err := cwhydra.LoginManager(*cwhydra.AdminApi).Accept(challenge, cwhydra.AcceptLoginRequest{
+		Subject: username,
+		Context: map[string]interface{}{
+			"username":    username,
+			"role":        user.Group,
+			"private_key": user.PrivateKey,
+			"public_key":  user.PublicKey,
+		},
+		Remember: true,
 	})
 	if err != nil {
-		log.Println(err)
+		return errors.HandleError(c, errors.ErrInternal, "sign-in")
 	}
 
-	utils.SetCookie(c, "ctx", string(ctx), time.Now().Add(time.Second*30))
+	/*
+		ctx, err := json.Marshal(map[string]interface{}{
+			"username":    username,
+			"role":        user.Role,
+			"private_key": user.PrivateKey,
+			"public_key":  user.PublicKey,
+		})
+		if err != nil {
+			log.Println(err)
+		}
+
+		utils.SetCookie(c, "ctx", string(ctx), time.Now().Add(time.Second*30))
+	*/
+
+	log.Println(redirect)
 
 	return c.Redirect(redirect)
 }

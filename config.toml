@@ -1,0 +1,30 @@
+[server]
+address = "0.0.0.0"
+port = "3002"
+
+[database]
+driver = "sqlite"
+
+  [database.postgres]
+  address = "127.0.0.1"
+  port = "5432"
+  user = "postgres"
+  password = "4llc0ps4re64st4rds"
+  name = "auth"
+
+  [database.sqlite]
+  path = "./db.sqlite"
+
+[hydra]
+admin = "http://127.0.0.1:4445"
+public = "https://127.0.0.1:4444"
+
+  [[hydra.clients]]
+  id = "auth"
+  grant-types = [""]
+
+[oauth]
+server = "http://127.0.0.1:4444/"
+id = "auth"
+secret = ""
+callback = "http://127.0.0.1:3002/api/callback"
