@@ -44,8 +44,16 @@ func Register(c *fiber.Ctx) error {
 		return errors.HandleError(c, errors.ErrInternal, "sign-up")
 	}
 
+	// If this is the first user to register, makes them admin
+	isFirstUser := user.IsFirstOne()
+
+	if isFirstUser {
+		user.Group = "admin"
+	} else {
+		user.Group = "user"
+	}
+
 	// Set user data
-	user.Group = "user"
 	user.Password = hash
 	user.PrivateKey = pvkey
 	user.PublicKey = pbkey

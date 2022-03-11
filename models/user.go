@@ -22,7 +22,7 @@ func (u User) Delete() error {
 
 func (u User) Find() (User, error) {
 	var usr User
-	err := database.DB.Model(&u).Find(&usr).Error
+	err := database.DB.Find(&usr, u).Error
 	if err != nil {
 		return User{}, err
 	}
@@ -32,7 +32,7 @@ func (u User) Find() (User, error) {
 
 func (u User) Exist() bool {
 	var usr User
-	err := database.DB.Model(&u).Find(&usr).Error
+	err := database.DB.Find(&usr, u).Error
 	if err != nil {
 		return false
 	}
@@ -44,10 +44,24 @@ func (u User) Exist() bool {
 	return false
 }
 
-func (user User) Pubkey() (string, error) {
+func (u User) IsFirstOne() bool {
+	var usr User
+	err := database.DB.Limit(1).Find(&usr).Error
+	if err != nil {
+		return false
+	}
+
+	if usr.Name == "" {
+		return true
+	}
+
+	return false
+}
+
+func (u User) Pubkey() (string, error) {
 	var pubkey string
 
-	err := database.DB.Select("PublicKey").Find(&user).Scan(&pubkey).Error
+	err := database.DB.Select("PublicKey").Find(&u).Scan(&pubkey).Error
 	if err != nil {
 		return "", err
 	}

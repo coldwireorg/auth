@@ -2,7 +2,6 @@ package controller
 
 import (
 	"auth/utils"
-	"log"
 	"time"
 
 	"codeberg.org/coldwire/cwauth"
@@ -16,9 +15,6 @@ func Callback(c *fiber.Ctx) error {
 
 	utils.SetCookie(c, "id_token", idToken, time.Now().Add(time.Hour*6))
 	utils.SetCookie(c, "access_token", accessToken, time.Now().Add(time.Hour*6))
-
-	claims := cwauth.GetClaims(idToken)
-	log.Println(claims)
 
 	return c.Redirect("/user")
 }

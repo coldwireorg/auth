@@ -2,7 +2,6 @@ package routes
 
 import (
 	"auth/middleware"
-	"log"
 
 	"codeberg.org/coldwire/cwauth"
 	"github.com/gofiber/fiber/v2"
@@ -20,8 +19,6 @@ func View(app *fiber.App) {
 	app.Get("/sign-in", middleware.CheckAuthenticated, func(c *fiber.Ctx) error {
 		err := c.Query("err")
 		challenge := c.Query("login_challenge")
-
-		log.Println(err)
 
 		return c.Render("index", fiber.Map{
 			"Register":  false,
