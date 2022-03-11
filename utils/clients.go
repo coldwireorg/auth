@@ -30,7 +30,7 @@ func InitClients() {
 			RedirectUris: []string{
 				config.Conf.Server.AuthUrl + "/api/callback",
 			},
-			TokenEndpointAuthMethod: "none",
+			TokenEndpointAuthMethod: "client_secret_post",
 		})
 
 		if err != nil {
@@ -41,12 +41,12 @@ func InitClients() {
 	for _, cv := range config.Conf.Hydra.Clients {
 		c, _ := cwhydra.ClientManager(*cwhydra.AdminApi).Get(cv.ClientId)
 		if c.ClientId != "" {
-			break
-		}
-
-		_, err := cwhydra.ClientManager(*cwhydra.AdminApi).Create(cv)
-		if err != nil {
-			log.Err(err).Msg(err.Error())
+			continue
+		} else {
+			_, err = cwhydra.ClientManager(*cwhydra.AdminApi).Create(cv)
+			if err != nil {
+				log.Err(err).Msg(err.Error())
+			}
 		}
 	}
 }
