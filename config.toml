@@ -1,6 +1,8 @@
 [server]
 address = "0.0.0.0"
 port = "3002"
+auth-url = "http://127.0.0.1:3002"
+auth-secret = "acab1312"
 
 [database]
 driver = "sqlite"
@@ -17,14 +19,13 @@ driver = "sqlite"
 
 [hydra]
 admin = "http://127.0.0.1:4445"
-public = "https://127.0.0.1:4444"
+public = "http://127.0.0.1:4444/"
 
   [[hydra.clients]]
-  id = "auth"
-  grant-types = [""]
-
-[oauth]
-server = "http://127.0.0.1:4444/"
-id = "auth"
-secret = ""
-callback = "http://127.0.0.1:3002/api/callback"
+  ClientId = "bloc"
+  ClientSecret = "acab1312"
+  GrantTypes = ["authorization_code", "refresh_token"]
+  ResponseTypes = ["code", "id_token"]
+  Scope = "openid,offline"
+  RedirectUris = ["https://bloc.coldwire.org/user/auth/oauth2/callback"]
+  TokenEndpointAuthMethod = "none"

@@ -47,10 +47,10 @@ func init() {
 
 	// Connet to hydra public oauth provider
 	cwauth.InitOauth2(oauth2.Config{
-		ClientID:     config.Conf.Oauth.Id,
-		ClientSecret: config.Conf.Oauth.Secret,
-		RedirectURL:  config.Conf.Oauth.Callback,
-	}, config.Conf.Oauth.Server)
+		ClientID:     "auth",
+		ClientSecret: config.Conf.Server.AuthSecret,
+		RedirectURL:  config.Conf.Server.AuthUrl + "/api/callback",
+	}, config.Conf.Hydra.Public)
 }
 
 func main() {
@@ -73,30 +73,7 @@ func main() {
 	routes.Api(app)
 	routes.View(app)
 
-	client, err := cwhydra.ClientManager(*cwhydra.AdminApi).List()
-	if err != nil {
-		log.Err(err).Msg(err.Error())
-	}
-
-	// If there is no client
-	if len(client) == 0 {
-		cwhydra.ClientManager(*cwhydra.AdminApi).Create(cwhydra.OAuth2Client{
-			ClientId: "auth",
-			GrantTypes: []string{
-				"authorization_code",
-				"refresh_token",
-			},
-			ResponseTypes: []string{
-				"code",
-				"id_token",
-			},
-			Scope: "openid,offline",
-			RedirectUris: []string{
-				"http://127.0.0.1:3002/api/callback",
-			},
-			TokenEndpointAuthMethod: "none",
-		})
-	}
+	utils.InitClients()
 
 	log.Info().Err(app.Listen(config.Conf.Server.Address + ":" + config.Conf.Server.Port))
 }
