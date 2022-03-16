@@ -60,8 +60,8 @@ func main() {
 		Views: engine,
 	})
 
-	// Add static server
-	app.Static("/static", "static")
+	// Load view as static website
+	app.Static("/", "views/public")
 
 	// migrate database
 	utils.MigrateTables()
