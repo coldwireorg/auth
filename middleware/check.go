@@ -1,49 +1,53 @@
 package middleware
 
 import (
-	"log"
+	"auth/utils/errors"
+	"auth/utils/tokens"
 
-	"codeberg.org/coldwire/cwauth"
+	"codeberg.org/coldwire/cwhydra"
 	"github.com/gofiber/fiber/v2"
 )
 
-func CheckAuthenticated(c *fiber.Ctx) error {
-	idToken := c.Cookies("id_token")
-	accesToken := c.Cookies("access_token")
+// Verify if the user is already logged in
+func OnAuth(c *fiber.Ctx) error {
+	token := c.Cookies("token")
 	challenge := c.Query("login_challenge")
 
-	csrf := c.Cookies("oauth2_authentication_csrf")
-	csrfInsecure := c.Cookies("oauth2_authentication_csrf_insecure")
-
-	isTokenValide := cwauth.CheckToken(idToken, accesToken)
-	if isTokenValide {
-		return c.Redirect("/user")
-	}
-
-	if challenge != "" && (csrf != "" || csrfInsecure != "") {
+	verifiedToken, err := tokens.Verify(token)
+	if err != nil {
 		return c.Next()
 	}
 
-	url, err := cwauth.AuthURL()
-	if err != nil {
-		log.Println(err)
-	}
+	if challenge != "" {
+		var claims tokens.Token
+		verifiedToken.Claims(&claims)
 
-	return c.Redirect(url)
-}
-
-func CheckUser(c *fiber.Ctx) error {
-	idToken := c.Cookies("id_token")
-	accesToken := c.Cookies("access_token")
-
-	isTokenValide := cwauth.CheckToken(idToken, accesToken)
-	if !isTokenValide {
-		url, err := cwauth.AuthURL()
+		redirect, err := cwhydra.LoginManager(*cwhydra.AdminApi).Accept(challenge, cwhydra.AcceptLoginRequest{
+			Subject: claims.Username,
+			Context: map[string]interface{}{
+				"username":    claims.Username,
+				"role":        claims.Group,
+				"private_key": claims.PrivateKey,
+				"public_key":  claims.PublicKey,
+			},
+			Remember: true,
+		})
 		if err != nil {
-			log.Println(err)
+			return errors.Handle(c, errors.ErrAuth, err)
 		}
 
-		return c.Redirect(url)
+		return c.Redirect(redirect)
+	} else {
+		return c.Next()
+	}
+}
+
+func CheckToken(c *fiber.Ctx) error {
+	token := c.Cookies("token")
+
+	_, err := tokens.Verify(token)
+	if err != nil {
+		return errors.Handle(c, errors.ErrAuth, err)
 	}
 
 	return c.Next()

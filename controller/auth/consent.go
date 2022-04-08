@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"log"
+	"auth/utils/errors"
 
 	"codeberg.org/coldwire/cwhydra"
 	"github.com/gofiber/fiber/v2"
@@ -12,7 +12,7 @@ func Consent(c *fiber.Ctx) error {
 
 	login, err := cwhydra.ConsentManager(*cwhydra.AdminApi).Get(challenge)
 	if err != nil {
-		log.Fatalln(err)
+		return errors.Handle(c, errors.ErrAuth, err)
 	}
 
 	redirect, err := cwhydra.ConsentManager(*cwhydra.AdminApi).Accept(challenge, cwhydra.AcceptConsentRequest{
@@ -27,7 +27,7 @@ func Consent(c *fiber.Ctx) error {
 	})
 
 	if err != nil {
-		log.Fatal(err)
+		return errors.Handle(c, errors.ErrAuth, err)
 	}
 
 	return c.Redirect(redirect)

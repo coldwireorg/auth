@@ -63,18 +63,18 @@ func Register(c *fiber.Ctx) error {
 		return errors.Handle(c, errors.ErrDatabaseCreate, err)
 	}
 
+	usrData := tokens.Token{
+		Username:   user.Name,
+		Group:      user.Group,
+		PrivateKey: user.PrivateKey,
+		PublicKey:  user.PublicKey,
+	}
+
+	cookie := tokens.Generate(usrData, 24*time.Hour)
+
+	utils.SetCookie(c, "token", cookie, time.Now())
+
 	if challenge == "" {
-		usrData := tokens.Token{
-			Username:   user.Name,
-			Group:      user.Group,
-			PrivateKey: user.PrivateKey,
-			PublicKey:  user.PublicKey,
-		}
-
-		cookie := tokens.Generate(usrData, 24*time.Hour)
-
-		utils.SetCookie(c, "token", cookie, time.Now())
-
 		return errors.Handle(c, errors.Success, usrData)
 	} else {
 		redirect, err := cwhydra.LoginManager(*cwhydra.AdminApi).Accept(challenge, cwhydra.AcceptLoginRequest{
