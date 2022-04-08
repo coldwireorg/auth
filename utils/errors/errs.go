@@ -11,7 +11,7 @@ type Response struct {
 	Message string `json:"message"`
 
 	Content interface{} `json:"content"`
-	Error   error       `json:"error"`
+	Error   string      `json:"error"`
 }
 
 func Handle(c *fiber.Ctx, args ...interface{}) error {
@@ -27,11 +27,11 @@ func Handle(c *fiber.Ctx, args ...interface{}) error {
 		Message: args[0].(Response).Message,
 	}
 
-	if args[1] != nil {
+	if len(args) > 1 {
 		switch args[1].(type) {
 		case error:
 			log.Err(args[1].(error)).Msg(args[1].(error).Error()) // Print error
-			res.Error = args[1].(error)
+			res.Error = args[1].(error).Error()
 		default:
 			res.Content = args[1]
 		}
@@ -42,6 +42,11 @@ func Handle(c *fiber.Ctx, args ...interface{}) error {
 
 var (
 	/* INTERNAL */
+	Success = Response{
+		Status:  300,
+		Code:    "SUCCESS",
+		Message: "Request treated with success!",
+	}
 	ErrRequest = Response{
 		Status:  400,
 		Code:    "ERROR_REQUEST",

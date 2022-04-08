@@ -6,20 +6,19 @@ import (
 	"auth/utils"
 	"auth/utils/config"
 	"auth/utils/env"
+	"auth/utils/tokens"
 	"crypto/tls"
 	"embed"
 	"flag"
 	"net/http"
 	"os"
 
-	"codeberg.org/coldwire/cwauth"
 	"codeberg.org/coldwire/cwhydra"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"golang.org/x/oauth2"
 )
 
 //go:embed views/public/*
@@ -49,12 +48,8 @@ func init() {
 		},
 	})
 
-	// Connet to hydra public oauth provider
-	cwauth.InitOauth2(oauth2.Config{
-		ClientID:     "auth",
-		ClientSecret: config.Conf.Server.AuthSecret,
-		RedirectURL:  config.Conf.Server.AuthUrl + "/api/callback",
-	}, config.Conf.Hydra.Public)
+	// generate key for signing jwt tokens
+	tokens.Init()
 }
 
 func main() {
