@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func Pubkey(c *fiber.Ctx) error {
+func key(c *fiber.Ctx) error {
 	username := c.Params("username")
 
 	user := models.User{

@@ -39,7 +39,5 @@ services:
       - POSTGRES_DB=hydra
     networks:
       - intranet
-volumes:
-  hydra-sqlite:
 networks:
   intranet:
