@@ -13,6 +13,7 @@
     <a class="btn {color}" on:click={() => push(link)} href={link} {target}><slot/></a> 
   {/if}
 {:else}
+  <!-- svelte-ignore a11y-missing-attribute -->
   <a class="btn {color}" on:click><slot/></a>
 {/if}
 

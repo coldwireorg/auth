@@ -1,12 +1,13 @@
 <script>
   import { location } from 'svelte-spa-router'
+  import { fade } from 'svelte/transition'
 
   import Link from '../components/Link.svelte'
   import Field from '../components/Field.svelte';
   import Button from '../components/Button.svelte';
 </script>
 
-<div class="auth">
+<div class="auth" in:fade={{duration: 300}} out:fade={{duration: 300}}>
   <div class="form">
     <div class="top">
       <img src="/icons/lock.svg" alt="">

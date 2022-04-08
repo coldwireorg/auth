@@ -3,7 +3,6 @@ package controller
 import (
 	"auth/models"
 	"auth/utils/errors"
-	"log"
 
 	"codeberg.org/coldwire/cwhydra"
 	"github.com/alexedwards/argon2id"
@@ -25,27 +24,28 @@ func Login(c *fiber.Ctx) error {
 
 	// Verify that the username is not empty
 	if username == "" {
-		return errors.HandleError(c, errors.ErrRequest, "sign-in")
+		return errors.Handle(c, errors.ErrBody)
 	}
 
 	// Get the user
 	user, err := user.Find()
 	if err != nil {
-		return errors.HandleError(c, errors.ErrDatabaseNotFound, "sign-in")
+		return errors.Handle(c, errors.ErrAuth, err)
 	}
 
 	if user.Name == "" {
-		return errors.HandleError(c, errors.ErrDatabaseNotFound, "sign-in")
+		return errors.Handle(c, errors.ErrBody)
 	}
 
 	// Verify password
 	isValidPassword, err := argon2id.ComparePasswordAndHash(password, user.Password)
 	if err != nil {
-		return errors.HandleError(c, errors.ErrInternal, "sign-in")
+		return errors.Handle(c, errors.ErrAuth, err)
+
 	}
 
 	if !isValidPassword {
-		return errors.HandleError(c, errors.ErrAuthPassword, "sign-in")
+		return errors.Handle(c, errors.ErrAuthPassword)
 	}
 
 	redirect, err := cwhydra.LoginManager(*cwhydra.AdminApi).Accept(challenge, cwhydra.AcceptLoginRequest{
@@ -59,24 +59,8 @@ func Login(c *fiber.Ctx) error {
 		Remember: true,
 	})
 	if err != nil {
-		return errors.HandleError(c, errors.ErrInternal, "sign-in")
+		return errors.Handle(c, errors.ErrAuth, err)
 	}
-
-	/*
-		ctx, err := json.Marshal(map[string]interface{}{
-			"username":    username,
-			"role":        user.Role,
-			"private_key": user.PrivateKey,
-			"public_key":  user.PublicKey,
-		})
-		if err != nil {
-			log.Println(err)
-		}
-
-		utils.SetCookie(c, "ctx", string(ctx), time.Now().Add(time.Second*30))
-	*/
-
-	log.Println(redirect)
 
 	return c.Redirect(redirect)
 }

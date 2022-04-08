@@ -7,6 +7,7 @@ import (
 	"auth/utils/config"
 	"auth/utils/env"
 	"crypto/tls"
+	"embed"
 	"flag"
 	"net/http"
 	"os"
@@ -15,11 +16,14 @@ import (
 	"codeberg.org/coldwire/cwhydra"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/template/html"
+	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/oauth2"
 )
+
+//go:embed views/public/*
+var views embed.FS
 
 func init() {
 	// Configure logs
@@ -55,13 +59,7 @@ func init() {
 
 func main() {
 	// Create fiber instance
-	engine := html.New("./views", ".html")
-	app := fiber.New(fiber.Config{
-		Views: engine,
-	})
-
-	// Load view as static website
-	app.Static("/", "views/public")
+	app := fiber.New()
 
 	// migrate database
 	utils.MigrateTables()
@@ -71,7 +69,13 @@ func main() {
 
 	// Setup routes
 	routes.Api(app)
-	routes.View(app)
+
+	// Load view as static website
+	app.Use("/", filesystem.New(filesystem.Config{
+		Root:       http.FS(views),
+		PathPrefix: "views/public",
+		Browse:     true,
+	}))
 
 	utils.InitClients()
 

@@ -1,6 +1,5 @@
 <script>
 	import Router, { location, push } from 'svelte-spa-router'
-  import { fade } from 'svelte/transition'
 
   import User from './pages/User.svelte'
   import Auth from './pages/Auth.svelte'
@@ -26,7 +25,7 @@
   <Router {routes} />
 
   {#if $location === '/sign-in' || $location === '/sign-up'}
-    <div in:fade={{duration: 300}} out:fade={{duration: 300}} class="background"></div>
+    <div class="background"></div>
   {/if}
 </main>
 

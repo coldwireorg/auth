@@ -29,19 +29,19 @@ func Register(c *fiber.Ctx) error {
 
 	// Verify that the username is not empty or too short
 	if username == "" {
-		return errors.HandleError(c, errors.ErrRequest, "sign-up")
+		return errors.Handle(c, errors.ErrBody)
 	}
 
 	// Verify if the user already exist
 	exist := user.Exist()
 	if exist {
-		return errors.HandleError(c, errors.ErrAuthExist, "sign-up")
+		return errors.Handle(c, errors.ErrAuthExist)
 	}
 
 	// Hash password with argon2id
 	hash, err := argon2id.CreateHash(password, argon2id.DefaultParams)
 	if err != nil {
-		return errors.HandleError(c, errors.ErrInternal, "sign-up")
+		return errors.Handle(c, errors.ErrUnknown, err)
 	}
 
 	// If this is the first user to register, makes them admin
@@ -60,7 +60,7 @@ func Register(c *fiber.Ctx) error {
 
 	err = user.Create()
 	if err != nil {
-		return errors.HandleError(c, errors.ErrDatabaseCreate, "sign-up")
+		return errors.Handle(c, errors.ErrDatabaseCreate, err)
 	}
 
 	redirect, err := cwhydra.LoginManager(*cwhydra.AdminApi).Accept(challenge, cwhydra.AcceptLoginRequest{
@@ -74,7 +74,7 @@ func Register(c *fiber.Ctx) error {
 		Remember: true,
 	})
 	if err != nil {
-		return errors.HandleError(c, errors.ErrInternal, "sign-up")
+		return errors.Handle(c, errors.ErrUnknown, err)
 	}
 
 	return c.Redirect(redirect)
