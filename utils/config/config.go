@@ -59,6 +59,7 @@ func Init(file string) {
 		},
 
 		Hydra: HydraConfig{
+			Proxy:  env.Get("AUTH_HYDRA_PROXY", "false"),
 			Public: env.Get("AUTH_HYDRA_PUBLIC_URL", "http://127.0.0.1:4444/"),
 			Admin:  env.Get("AUTH_HYDRA_ADMIN_URL", "http://127.0.0.1:4445"),
 		},

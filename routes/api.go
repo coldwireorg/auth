@@ -16,8 +16,8 @@ func Api(app *fiber.App) {
 	authentication := api.Group("/auth")
 	authentication.All("/register", middleware.OnAuth, auth.Register) // register
 	authentication.All("/login", middleware.OnAuth, auth.Login)       // login
-	//authentication.All("/consent")  // consent oauth request
-	authentication.All("/logout", auth.Logout) // logout
+	authentication.All("/consent", auth.Consent)                      // consent oauth request
+	authentication.All("/logout", auth.Logout)                        // logout
 
 	/*
 		user := api.Group("/user")

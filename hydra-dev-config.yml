@@ -4,9 +4,9 @@ serve:
 
 urls:
   self:
-    issuer: http://127.0.0.1:4444/
+    issuer: http://127.0.0.1:3003/
     public: http://127.0.0.1:4444/
-  consent: http://127.0.0.1:3002/api/auth/consent
-  login: http://127.0.0.1:3002/#/sign-in
-  logout: http://127.0.0.1:3002/api/auth/logout
-  post_logout_redirect: http://127.0.0.1:3002/sign-in
+  consent: http://127.0.0.1:3003/api/auth/consent
+  login: http://127.0.0.1:3003/#/sign-in
+  logout: http://127.0.0.1:3003/api/auth/logout
+  post_logout_redirect: http://127.0.0.1:3003/#/sign-in

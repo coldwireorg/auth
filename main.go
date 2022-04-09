@@ -65,6 +65,10 @@ func main() {
 	// Setup routes
 	routes.Api(app)
 
+	if config.Conf.Hydra.Proxy == "true" {
+		routes.Hydra(app)
+	}
+
 	// Load view as static website
 	app.Use("/", filesystem.New(filesystem.Config{
 		Root:       http.FS(views),

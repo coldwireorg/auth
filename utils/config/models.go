@@ -34,6 +34,7 @@ type DatabaseSqliteConfig struct {
 }
 
 type HydraConfig struct {
+	Proxy   string `toml:"proxy"`
 	Admin   string `toml:"admin"`
 	Public  string `toml:"public"`
 	Clients []cwhydra.OAuth2Client
