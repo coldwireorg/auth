@@ -23,7 +23,7 @@
   }
 
   .normal:hover {
-    box-shadow: 0px 0px 2px 0px rgba(255, 255, 255, 0.623);
+    box-shadow: 0px 0px 2.7px 0px rgba(255, 255, 255, 0.623);
   }
 
   .green {
