@@ -52,4 +52,8 @@
   .green {
 		background-color: var(--primary-green);
   }
+
+	.red {
+		background-color: var(--secondary-red);
+  }
 </style>

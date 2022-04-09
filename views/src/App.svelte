@@ -1,19 +1,55 @@
 <script>
 	import Router, { location, push } from 'svelte-spa-router'
+  import {wrap} from 'svelte-spa-router/wrap'
 
   import User from './pages/User.svelte'
   import Auth from './pages/Auth.svelte'
 
-  const routes = {
-    '/user': User,
-    '/sign-in': Auth,
-    '/sign-up': Auth
+  const isAuth = () => {
+    if (document.cookie.split("=")[1]) {
+      return true
+    }
+
+    return false
   }
 
-  let isAuth = true
-
-  if ($location === '/' && !isAuth) {
-    push('/sign-in')
+  const routes = {
+    '/': wrap({
+      component: User,
+      conditions: [
+        (detail) => {
+          if (isAuth()) {
+            return true
+          } else {
+            push("/sign-in")
+          }
+        }
+      ]
+    }),
+    '/sign-in': wrap({
+      component: Auth,
+      conditions: [
+        (detail) => {
+          if (isAuth()) {
+            push("/")
+          } else {
+            return true
+          }
+        }
+      ]
+    }),
+    '/sign-up': wrap({
+      component: Auth,
+      conditions: [
+        (detail) => {
+          if (isAuth()) {
+            push("/")
+          } else {
+            return true
+          }
+        }
+      ]
+    })
   }
 </script>
 

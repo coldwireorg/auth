@@ -51,7 +51,7 @@
       if (data.content.redirect_url) {
         window.location.replace(data.content.redirect_url)
       } else {
-        push("/user")
+        push("/")
       }
     } else {
       error = data.message

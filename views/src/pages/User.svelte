@@ -1,12 +1,20 @@
 <script>
   import { fade } from 'svelte/transition'
+  import jwt_decode from "jwt-decode";
 
   import Card from '../components/Card.svelte'
   import Profile from '../components/Profile.svelte'
   import Text from '../components/Text.svelte'
   import Field from '../components/Field.svelte';
   import Button from '../components/Button.svelte';
-import Tag from '../components/Tag.svelte';
+  import Tag from '../components/Tag.svelte';
+
+  let userData = jwt_decode(document.cookie.split("=")[1])
+
+  const logout = () => [
+    fetch("/api/auth/logout")
+    .then(() => window.location.reload())
+  ]
 </script>
 
 <div class="user" in:fade={{duration: 300}} out:fade={{duration: 300}}>
@@ -14,13 +22,13 @@ import Tag from '../components/Tag.svelte';
     <Text type="h2">Account</Text>
     <Card style="display: flex; flex-direction: column; gap:8px;">
       <div class="user-name">
-        <Profile username="monoko" />
-        <Text type="h2">Monoko</Text>
+        <Profile username={userData.username} />
+        <Text type="h2">{userData.username}</Text>
       </div>
       <br>
       <div class="account-info-item">
         <img src="/icons/key.svg" alt="">
-        <Text type="h3" color="var(--complementary-white-50)">EgNdEt1ue2DtqR9/qCckf7tfifNJ+vHd...</Text>
+        <Text type="h3" color="var(--complementary-white-50)">{userData.public_key.slice(0, 30)}...</Text>
       </div>
       <div class="account-info-item">
         <img src="/icons/eye.svg" alt="">
@@ -30,6 +38,10 @@ import Tag from '../components/Tag.svelte';
         <img src="/icons/server.svg" alt="">
         <Text type="h3" color="var(--complementary-white-50)">coldwire.org</Text>
       </div>
+      <br>
+      <Button color="red" on:click={logout}>
+        Logout
+      </Button>
     </Card>
     <Card style="display: flex; flex-direction: column; gap:8px;">
       <Text type="h2">Change your password</Text>
