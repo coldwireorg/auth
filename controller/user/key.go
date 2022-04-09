@@ -1,12 +1,13 @@
-package controller
+package user
 
 import (
 	"auth/models"
+	"auth/utils/errors"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func key(c *fiber.Ctx) error {
+func Key(c *fiber.Ctx) error {
 	username := c.Params("username")
 
 	user := models.User{
@@ -15,12 +16,11 @@ func key(c *fiber.Ctx) error {
 
 	key, err := user.Pubkey()
 	if err != nil {
-		return c.JSON(fiber.Map{
-			"error": err.Error(),
-		})
+		return errors.Handle(c, errors.ErrDatabaseNotFound, err)
+
 	}
 
-	return c.JSON(fiber.Map{
+	return errors.Handle(c, errors.Success, fiber.Map{
 		"key": key,
 	})
 }

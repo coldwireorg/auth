@@ -2,6 +2,7 @@ package routes
 
 import (
 	"auth/controller/auth"
+	"auth/controller/user"
 	"auth/middleware"
 
 	"github.com/gofiber/fiber/v2"
@@ -19,12 +20,12 @@ func Api(app *fiber.App) {
 	authentication.All("/consent", auth.Consent)                      // consent oauth request
 	authentication.All("/logout", auth.Logout)                        // logout
 
-	/*
-		user := api.Group("/user")
-		user.Get("/key/:username") // get user's public key
-		user.Put("/")              // update user's informations
-		user.Delete("/")           // delte user
+	usr := api.Group("/user")
+	usr.Get("/key/:username", user.Key)                        // get user's public key
+	usr.Put("/password", middleware.CheckToken, user.Password) // update user's informations
+	//usr.Delete("/")                                            // delte user
 
+	/*
 		services := api.Group("/services")
 		services.Get("/")       // list all services
 		services.Post("/:id")   // add a new service

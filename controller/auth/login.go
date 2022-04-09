@@ -41,7 +41,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	if user.Name == "" {
-		return errors.Handle(c, errors.ErrBody)
+		return errors.Handle(c, errors.ErrDatabaseNotFound)
 	}
 
 	// Verify password

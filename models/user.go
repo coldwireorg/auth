@@ -68,3 +68,12 @@ func (u User) Pubkey() (string, error) {
 
 	return pubkey, nil
 }
+
+func (u User) SetPassword(new string) error {
+	err := database.DB.Model(User{}).Where("name = ?", u.Name).Update("password", new).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

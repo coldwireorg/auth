@@ -4,6 +4,7 @@
 
   import AccountCard from '../components/AccountCard.svelte'
   import AccountPassword from '../components/AccountPassword.svelte'
+  import AccountDelete from '../components/AccountDelete.svelte'
   import AccountDonate from '../components/AccountDonate.svelte'
   import Hub from '../components/Hub.svelte';
 
@@ -19,6 +20,7 @@
       <div id="top">
         <AccountCard usrdta={userData} />
         <AccountPassword />
+        <AccountDelete />
       </div>
       <AccountDonate />
     </div>
@@ -34,7 +36,6 @@
     bottom: 0;
     right: 0;
     display: flex;
-
   }
 
   .user .account {
@@ -54,6 +55,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    gap: 16px;
     height: 100%;
   }
 
