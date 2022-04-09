@@ -2294,7 +2294,7 @@ var app = (function () {
     }
 
     // (10:24) 
-    function create_if_block_2(ctx) {
+    function create_if_block_2$1(ctx) {
     	let h3;
     	let current;
     	const default_slot_template = /*#slots*/ ctx[3].default;
@@ -2354,7 +2354,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_2.name,
+    		id: create_if_block_2$1.name,
     		type: "if",
     		source: "(10:24) ",
     		ctx
@@ -2508,7 +2508,7 @@ var app = (function () {
     	let if_block;
     	let if_block_anchor;
     	let current;
-    	const if_block_creators = [create_if_block$5, create_if_block_1$3, create_if_block_2, create_if_block_3];
+    	const if_block_creators = [create_if_block$5, create_if_block_1$3, create_if_block_2$1, create_if_block_3];
     	const if_blocks = [];
 
     	function select_block_type(ctx, dirty) {
@@ -5506,14 +5506,49 @@ var app = (function () {
     const { console: console_1 } = globals;
     const file$1 = "src/pages/Auth.svelte";
 
-    // (73:6) {#if $location === '/sign-up'}
+    // (72:6) {#if error != ""}
+    function create_if_block_2(ctx) {
+    	let span;
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			span = element("span");
+    			t = text(/*error*/ ctx[3]);
+    			attr_dev(span, "class", "error svelte-1wqvzbr");
+    			add_location(span, file$1, 72, 8, 1713);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, span, anchor);
+    			append_dev(span, t);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*error*/ 8) set_data_dev(t, /*error*/ ctx[3]);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(span);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_2.name,
+    		type: "if",
+    		source: "(72:6) {#if error != \\\"\\\"}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (77:6) {#if $location === '/sign-up'}
     function create_if_block_1(ctx) {
     	let field;
     	let updating_value;
     	let current;
 
     	function field_value_binding(value) {
-    		/*field_value_binding*/ ctx[7](value);
+    		/*field_value_binding*/ ctx[8](value);
     	}
 
     	let field_props = {
@@ -5565,16 +5600,16 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(73:6) {#if $location === '/sign-up'}",
+    		source: "(77:6) {#if $location === '/sign-up'}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (76:6) <Button on:click={auth}>
+    // (80:6) <Button on:click={auth}>
     function create_default_slot_2(ctx) {
-    	let t_value = (/*$location*/ ctx[3] === '/sign-up'
+    	let t_value = (/*$location*/ ctx[4] === '/sign-up'
     	? 'Sign-up'
     	: 'Sign-in') + "";
 
@@ -5588,7 +5623,7 @@ var app = (function () {
     			insert_dev(target, t, anchor);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*$location*/ 8 && t_value !== (t_value = (/*$location*/ ctx[3] === '/sign-up'
+    			if (dirty & /*$location*/ 16 && t_value !== (t_value = (/*$location*/ ctx[4] === '/sign-up'
     			? 'Sign-up'
     			: 'Sign-in') + "")) set_data_dev(t, t_value);
     		},
@@ -5601,14 +5636,14 @@ var app = (function () {
     		block,
     		id: create_default_slot_2.name,
     		type: "slot",
-    		source: "(76:6) <Button on:click={auth}>",
+    		source: "(80:6) <Button on:click={auth}>",
     		ctx
     	});
 
     	return block;
     }
 
-    // (82:8) {:else}
+    // (86:8) {:else}
     function create_else_block(ctx) {
     	let p;
     	let t0;
@@ -5631,8 +5666,8 @@ var app = (function () {
     			t0 = text("Already have an account?? ");
     			create_component(link.$$.fragment);
     			t1 = text("!");
-    			attr_dev(p, "class", "svelte-1ki8as1");
-    			add_location(p, file$1, 82, 10, 2311);
+    			attr_dev(p, "class", "svelte-1wqvzbr");
+    			add_location(p, file$1, 86, 10, 2336);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -5660,14 +5695,14 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(82:8) {:else}",
+    		source: "(86:8) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (80:8) {#if $location === '/sign-in'}
+    // (84:8) {#if $location === '/sign-in'}
     function create_if_block$1(ctx) {
     	let p;
     	let t0;
@@ -5690,8 +5725,8 @@ var app = (function () {
     			t0 = text("You don't have an account yet? ");
     			create_component(link.$$.fragment);
     			t1 = text("!");
-    			attr_dev(p, "class", "svelte-1ki8as1");
-    			add_location(p, file$1, 80, 10, 2206);
+    			attr_dev(p, "class", "svelte-1wqvzbr");
+    			add_location(p, file$1, 84, 10, 2231);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -5719,14 +5754,14 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(80:8) {#if $location === '/sign-in'}",
+    		source: "(84:8) {#if $location === '/sign-in'}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (83:39) <Link link="/sign-in">
+    // (87:39) <Link link="/sign-in">
     function create_default_slot_1(ctx) {
     	let t;
 
@@ -5746,14 +5781,14 @@ var app = (function () {
     		block,
     		id: create_default_slot_1.name,
     		type: "slot",
-    		source: "(83:39) <Link link=\\\"/sign-in\\\">",
+    		source: "(87:39) <Link link=\\\"/sign-in\\\">",
     		ctx
     	});
 
     	return block;
     }
 
-    // (81:44) <Link link="/sign-up">
+    // (85:44) <Link link="/sign-up">
     function create_default_slot(ctx) {
     	let t;
 
@@ -5773,7 +5808,7 @@ var app = (function () {
     		block,
     		id: create_default_slot.name,
     		type: "slot",
-    		source: "(81:44) <Link link=\\\"/sign-up\\\">",
+    		source: "(85:44) <Link link=\\\"/sign-up\\\">",
     		ctx
     	});
 
@@ -5791,31 +5826,31 @@ var app = (function () {
     	let t2;
     	let h4;
 
-    	let t3_value = (/*$location*/ ctx[3] === '/sign-up'
+    	let t3_value = (/*$location*/ ctx[4] === '/sign-up'
     	? 'Sign-up'
     	: 'Sign-in') + "";
 
     	let t3;
     	let t4;
     	let div2;
+    	let t5;
     	let field0;
     	let updating_value;
-    	let t5;
+    	let t6;
     	let field1;
     	let updating_value_1;
-    	let t6;
     	let t7;
-    	let button;
     	let t8;
+    	let button;
+    	let t9;
     	let div1;
     	let current_block_type_index;
-    	let if_block1;
-    	let div4_intro;
-    	let div4_outro;
+    	let if_block2;
     	let current;
+    	let if_block0 = /*error*/ ctx[3] != "" && create_if_block_2(ctx);
 
     	function field0_value_binding(value) {
-    		/*field0_value_binding*/ ctx[5](value);
+    		/*field0_value_binding*/ ctx[6](value);
     	}
 
     	let field0_props = { type: "text", placeholder: "Username" };
@@ -5828,7 +5863,7 @@ var app = (function () {
     	binding_callbacks.push(() => bind(field0, 'value', field0_value_binding));
 
     	function field1_value_binding(value) {
-    		/*field1_value_binding*/ ctx[6](value);
+    		/*field1_value_binding*/ ctx[7](value);
     	}
 
     	let field1_props = {
@@ -5842,7 +5877,7 @@ var app = (function () {
 
     	field1 = new Field({ props: field1_props, $$inline: true });
     	binding_callbacks.push(() => bind(field1, 'value', field1_value_binding));
-    	let if_block0 = /*$location*/ ctx[3] === '/sign-up' && create_if_block_1(ctx);
+    	let if_block1 = /*$location*/ ctx[4] === '/sign-up' && create_if_block_1(ctx);
 
     	button = new Button({
     			props: {
@@ -5852,17 +5887,17 @@ var app = (function () {
     			$$inline: true
     		});
 
-    	button.$on("click", /*auth*/ ctx[4]);
+    	button.$on("click", /*auth*/ ctx[5]);
     	const if_block_creators = [create_if_block$1, create_else_block];
     	const if_blocks = [];
 
     	function select_block_type(ctx, dirty) {
-    		if (/*$location*/ ctx[3] === '/sign-in') return 0;
+    		if (/*$location*/ ctx[4] === '/sign-in') return 0;
     		return 1;
     	}
 
     	current_block_type_index = select_block_type(ctx);
-    	if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    	if_block2 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
 
     	const block = {
     		c: function create() {
@@ -5878,33 +5913,35 @@ var app = (function () {
     			t3 = text(t3_value);
     			t4 = space();
     			div2 = element("div");
-    			create_component(field0.$$.fragment);
-    			t5 = space();
-    			create_component(field1.$$.fragment);
-    			t6 = space();
     			if (if_block0) if_block0.c();
+    			t5 = space();
+    			create_component(field0.$$.fragment);
+    			t6 = space();
+    			create_component(field1.$$.fragment);
     			t7 = space();
-    			create_component(button.$$.fragment);
+    			if (if_block1) if_block1.c();
     			t8 = space();
+    			create_component(button.$$.fragment);
+    			t9 = space();
     			div1 = element("div");
-    			if_block1.c();
+    			if_block2.c();
     			if (!src_url_equal(img.src, img_src_value = "/icons/lock.svg")) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "");
-    			add_location(img, file$1, 63, 6, 1532);
-    			attr_dev(p, "class", "svelte-1ki8as1");
-    			add_location(p, file$1, 64, 6, 1573);
-    			attr_dev(div0, "class", "top svelte-1ki8as1");
-    			add_location(div0, file$1, 62, 4, 1508);
-    			attr_dev(h4, "class", "title svelte-1ki8as1");
-    			add_location(h4, file$1, 67, 4, 1635);
+    			add_location(img, file$1, 64, 6, 1478);
+    			attr_dev(p, "class", "svelte-1wqvzbr");
+    			add_location(p, file$1, 65, 6, 1519);
+    			attr_dev(div0, "class", "top svelte-1wqvzbr");
+    			add_location(div0, file$1, 63, 4, 1454);
+    			attr_dev(h4, "class", "title svelte-1wqvzbr");
+    			add_location(h4, file$1, 68, 4, 1581);
     			attr_dev(div1, "class", "question");
-    			add_location(div1, file$1, 78, 6, 2134);
-    			attr_dev(div2, "class", "fields svelte-1ki8as1");
-    			add_location(div2, file$1, 69, 4, 1714);
-    			attr_dev(div3, "class", "form svelte-1ki8as1");
-    			add_location(div3, file$1, 61, 2, 1485);
-    			attr_dev(div4, "class", "auth svelte-1ki8as1");
-    			add_location(div4, file$1, 60, 0, 1411);
+    			add_location(div1, file$1, 82, 6, 2159);
+    			attr_dev(div2, "class", "fields svelte-1wqvzbr");
+    			add_location(div2, file$1, 70, 4, 1660);
+    			attr_dev(div3, "class", "form svelte-1wqvzbr");
+    			add_location(div3, file$1, 62, 2, 1431);
+    			attr_dev(div4, "class", "auth svelte-1wqvzbr");
+    			add_location(div4, file$1, 61, 0, 1410);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -5921,22 +5958,37 @@ var app = (function () {
     			append_dev(h4, t3);
     			append_dev(div3, t4);
     			append_dev(div3, div2);
-    			mount_component(field0, div2, null);
-    			append_dev(div2, t5);
-    			mount_component(field1, div2, null);
-    			append_dev(div2, t6);
     			if (if_block0) if_block0.m(div2, null);
+    			append_dev(div2, t5);
+    			mount_component(field0, div2, null);
+    			append_dev(div2, t6);
+    			mount_component(field1, div2, null);
     			append_dev(div2, t7);
-    			mount_component(button, div2, null);
+    			if (if_block1) if_block1.m(div2, null);
     			append_dev(div2, t8);
+    			mount_component(button, div2, null);
+    			append_dev(div2, t9);
     			append_dev(div2, div1);
     			if_blocks[current_block_type_index].m(div1, null);
     			current = true;
     		},
     		p: function update(ctx, [dirty]) {
-    			if ((!current || dirty & /*$location*/ 8) && t3_value !== (t3_value = (/*$location*/ ctx[3] === '/sign-up'
+    			if ((!current || dirty & /*$location*/ 16) && t3_value !== (t3_value = (/*$location*/ ctx[4] === '/sign-up'
     			? 'Sign-up'
     			: 'Sign-in') + "")) set_data_dev(t3, t3_value);
+
+    			if (/*error*/ ctx[3] != "") {
+    				if (if_block0) {
+    					if_block0.p(ctx, dirty);
+    				} else {
+    					if_block0 = create_if_block_2(ctx);
+    					if_block0.c();
+    					if_block0.m(div2, t5);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
 
     			const field0_changes = {};
 
@@ -5957,24 +6009,24 @@ var app = (function () {
 
     			field1.$set(field1_changes);
 
-    			if (/*$location*/ ctx[3] === '/sign-up') {
-    				if (if_block0) {
-    					if_block0.p(ctx, dirty);
+    			if (/*$location*/ ctx[4] === '/sign-up') {
+    				if (if_block1) {
+    					if_block1.p(ctx, dirty);
 
-    					if (dirty & /*$location*/ 8) {
-    						transition_in(if_block0, 1);
+    					if (dirty & /*$location*/ 16) {
+    						transition_in(if_block1, 1);
     					}
     				} else {
-    					if_block0 = create_if_block_1(ctx);
-    					if_block0.c();
-    					transition_in(if_block0, 1);
-    					if_block0.m(div2, t7);
+    					if_block1 = create_if_block_1(ctx);
+    					if_block1.c();
+    					transition_in(if_block1, 1);
+    					if_block1.m(div2, t8);
     				}
-    			} else if (if_block0) {
+    			} else if (if_block1) {
     				group_outros();
 
-    				transition_out(if_block0, 1, 1, () => {
-    					if_block0 = null;
+    				transition_out(if_block1, 1, 1, () => {
+    					if_block1 = null;
     				});
 
     				check_outros();
@@ -5982,7 +6034,7 @@ var app = (function () {
 
     			const button_changes = {};
 
-    			if (dirty & /*$$scope, $location*/ 1032) {
+    			if (dirty & /*$$scope, $location*/ 1040) {
     				button_changes.$$scope = { dirty, ctx };
     			}
 
@@ -5998,51 +6050,42 @@ var app = (function () {
     				});
 
     				check_outros();
-    				if_block1 = if_blocks[current_block_type_index];
+    				if_block2 = if_blocks[current_block_type_index];
 
-    				if (!if_block1) {
-    					if_block1 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
-    					if_block1.c();
+    				if (!if_block2) {
+    					if_block2 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    					if_block2.c();
     				}
 
-    				transition_in(if_block1, 1);
-    				if_block1.m(div1, null);
+    				transition_in(if_block2, 1);
+    				if_block2.m(div1, null);
     			}
     		},
     		i: function intro(local) {
     			if (current) return;
     			transition_in(field0.$$.fragment, local);
     			transition_in(field1.$$.fragment, local);
-    			transition_in(if_block0);
-    			transition_in(button.$$.fragment, local);
     			transition_in(if_block1);
-
-    			add_render_callback(() => {
-    				if (div4_outro) div4_outro.end(1);
-    				div4_intro = create_in_transition(div4, fade, { duration: 300 });
-    				div4_intro.start();
-    			});
-
+    			transition_in(button.$$.fragment, local);
+    			transition_in(if_block2);
     			current = true;
     		},
     		o: function outro(local) {
     			transition_out(field0.$$.fragment, local);
     			transition_out(field1.$$.fragment, local);
-    			transition_out(if_block0);
-    			transition_out(button.$$.fragment, local);
     			transition_out(if_block1);
-    			if (div4_intro) div4_intro.invalidate();
-    			div4_outro = create_out_transition(div4, fade, { duration: 300 });
+    			transition_out(button.$$.fragment, local);
+    			transition_out(if_block2);
     			current = false;
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div4);
+    			if (if_block0) if_block0.d();
     			destroy_component(field0);
     			destroy_component(field1);
-    			if (if_block0) if_block0.d();
+    			if (if_block1) if_block1.d();
     			destroy_component(button);
     			if_blocks[current_block_type_index].d();
-    			if (detaching && div4_outro) div4_outro.end();
     		}
     	};
 
@@ -6060,7 +6103,7 @@ var app = (function () {
     function instance$1($$self, $$props, $$invalidate) {
     	let $location;
     	validate_store(location, 'location');
-    	component_subscribe($$self, location, $$value => $$invalidate(3, $location = $$value));
+    	component_subscribe($$self, location, $$value => $$invalidate(4, $location = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Auth', slots, []);
     	const urlParams = new URLSearchParams(window.location.search);
@@ -6081,7 +6124,7 @@ var app = (function () {
 
     		if ($location === '/sign-up') {
     			if (password != repassword) {
-    				error = "passwords does not match";
+    				$$invalidate(3, error = "passwords does not match");
     				return;
     			}
 
@@ -6090,7 +6133,7 @@ var app = (function () {
     			req.private_key = keys.privateKey;
     		}
 
-    		const res = await fetch(`/api/auth/${$location === '/sign-up' ? 'register' : 'login'}${challenge != '' ? '?login_challenge=' + challenge : ''}`, {
+    		const res = await fetch(`/api/auth/${$location === '/sign-up' ? 'register' : 'login'}${challenge != null ? '?login_challenge=' + challenge : ''}`, {
     			method: "POST",
     			headers: { "Content-Type": "application/json" },
     			body: JSON.stringify(req)
@@ -6105,6 +6148,8 @@ var app = (function () {
     			} else {
     				push("/user");
     			}
+    		} else {
+    			$$invalidate(3, error = data.message);
     		}
     	};
 
@@ -6132,7 +6177,6 @@ var app = (function () {
     	$$self.$capture_state = () => ({
     		location,
     		push,
-    		fade,
     		Link,
     		Field,
     		Button,
@@ -6149,7 +6193,7 @@ var app = (function () {
     		if ('username' in $$props) $$invalidate(0, username = $$props.username);
     		if ('password' in $$props) $$invalidate(1, password = $$props.password);
     		if ('repassword' in $$props) $$invalidate(2, repassword = $$props.repassword);
-    		if ('error' in $$props) error = $$props.error;
+    		if ('error' in $$props) $$invalidate(3, error = $$props.error);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -6160,6 +6204,7 @@ var app = (function () {
     		username,
     		password,
     		repassword,
+    		error,
     		$location,
     		auth,
     		field0_value_binding,

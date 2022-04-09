@@ -1,6 +1,5 @@
 <script>
   import { location, push } from 'svelte-spa-router'
-  import { fade } from 'svelte/transition'
 
   import Link from '../components/Link.svelte'
   import Field from '../components/Field.svelte';
@@ -36,7 +35,7 @@
       req.private_key = keys.privateKey
     }
 
-    const res = await fetch(`/api/auth/${$location === '/sign-up' ? 'register' : 'login'}${challenge != '' ? '?login_challenge='+challenge : ''}`, {
+    const res = await fetch(`/api/auth/${$location === '/sign-up' ? 'register' : 'login'}${challenge != null ? '?login_challenge='+challenge : ''}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -54,11 +53,13 @@
       } else {
         push("/user")
       }
+    } else {
+      error = data.message
     }
   }
 </script>
 
-<div class="auth" in:fade={{duration: 300}} out:fade={{duration: 300}}>
+<div class="auth">
   <div class="form">
     <div class="top">
       <img src="/icons/lock.svg" alt="">
@@ -68,6 +69,9 @@
     <h4 class="title">{$location === '/sign-up' ? 'Sign-up' : 'Sign-in'}</h4>
 
     <div class="fields">
+      {#if error != ""}
+        <span class="error">{error}</span>
+      {/if}
       <Field type="text" placeholder="Username" bind:value={username} />
       <Field type="password" placeholder="password" bind:value={password} />
       {#if $location === '/sign-up'}
@@ -91,7 +95,7 @@
   .auth {
     position: absolute;
     left: 0; bottom: 0; top: 0;
-    width: 50%;
+    width: 100%;
 
     display: flex;
     justify-content: center;
@@ -137,6 +141,12 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+  }
+
+  .form .fields .error {
+    background-color: var(--secondary-red);
+    padding: 8px;
+    border-radius: 8px;
   }
 
   .form .question p {
