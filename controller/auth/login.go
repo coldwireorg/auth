@@ -13,21 +13,29 @@ import (
 )
 
 func Login(c *fiber.Ctx) error {
-	username := c.FormValue("username")
-	password := c.FormValue("password")
 	challenge := c.Query("login_challenge")
 
+	request := struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}{}
+
+	err := c.BodyParser(&request)
+	if err != nil {
+		return errors.Handle(c, errors.ErrBody, err)
+	}
+
 	user := models.User{
-		Name: username,
+		Name: request.Username,
 	}
 
 	// Verify that the username is not empty
-	if username == "" {
+	if request.Username == "" {
 		return errors.Handle(c, errors.ErrBody)
 	}
 
 	// Get the user
-	user, err := user.Find()
+	user, err = user.Find()
 	if err != nil {
 		return errors.Handle(c, errors.ErrAuth, err)
 	}
@@ -37,7 +45,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	// Verify password
-	isValidPassword, err := argon2id.ComparePasswordAndHash(password, user.Password)
+	isValidPassword, err := argon2id.ComparePasswordAndHash(request.Password, user.Password)
 	if err != nil {
 		return errors.Handle(c, errors.ErrAuth, err)
 	}
@@ -60,9 +68,9 @@ func Login(c *fiber.Ctx) error {
 		return errors.Handle(c, errors.Success, usrData)
 	} else {
 		redirect, err := cwhydra.LoginManager(*cwhydra.AdminApi).Accept(challenge, cwhydra.AcceptLoginRequest{
-			Subject: username,
+			Subject: request.Username,
 			Context: map[string]interface{}{
-				"username":    username,
+				"username":    request.Username,
 				"role":        user.Group,
 				"private_key": user.PrivateKey,
 				"public_key":  user.PublicKey,
@@ -73,6 +81,8 @@ func Login(c *fiber.Ctx) error {
 			return errors.Handle(c, errors.ErrAuth, err)
 		}
 
-		return c.Redirect(redirect)
+		return errors.Handle(c, errors.Success, fiber.Map{
+			"redirect_url": redirect,
+		})
 	}
 }

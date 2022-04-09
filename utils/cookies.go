@@ -15,7 +15,7 @@ func SetCookie(c *fiber.Ctx, name string, value string, expire time.Time) {
 		Value: value,
 		//Expires:     expire,
 		Domain:      uri[0],
-		HTTPOnly:    true,
+		HTTPOnly:    false,
 		SessionOnly: true,
 		Secure:      c.Secure(),
 	})

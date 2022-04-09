@@ -5,7 +5,7 @@
   import Auth from './pages/Auth.svelte'
 
   const routes = {
-    '/': User,
+    '/user': User,
     '/sign-in': Auth,
     '/sign-up': Auth
   }

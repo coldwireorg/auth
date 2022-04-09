@@ -2,6 +2,7 @@ package main
 
 import (
 	"auth/database"
+	"auth/middleware"
 	"auth/routes"
 	"auth/utils"
 	"auth/utils/config"
@@ -17,6 +18,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
+	"github.com/gofiber/fiber/v2/middleware/proxy"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -69,12 +71,26 @@ func main() {
 		routes.Hydra(app)
 	}
 
-	// Load view as static website
-	app.Use("/", filesystem.New(filesystem.Config{
-		Root:       http.FS(views),
-		PathPrefix: "views/public",
-		Browse:     true,
-	}))
+	if env.Get("DEV_FRONT_URL", "") == "" {
+		// Load view as static website
+		app.Use("/", middleware.OnAuth, filesystem.New(filesystem.Config{
+			Root:       http.FS(views),
+			PathPrefix: "views/public",
+			Browse:     true,
+		}))
+	} else {
+		app.Get("/*", middleware.OnAuth, func(c *fiber.Ctx) error {
+			url := env.Get("DEV_FRONT_URL", "") + c.Params("*")
+			err := proxy.Do(c, url)
+			if err != nil {
+				return err
+			}
+
+			c.Response().Header.Del(fiber.HeaderServer)
+
+			return nil
+		})
+	}
 
 	utils.InitClients()
 

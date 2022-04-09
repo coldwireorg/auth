@@ -1,10 +1,61 @@
 <script>
-  import { location } from 'svelte-spa-router'
+  import { location, push } from 'svelte-spa-router'
   import { fade } from 'svelte/transition'
 
   import Link from '../components/Link.svelte'
   import Field from '../components/Field.svelte';
   import Button from '../components/Button.svelte';
+
+  const urlParams = new URLSearchParams(window.location.search);
+
+  let username = ""
+  let password = ""
+  let repassword = ""
+
+  let error = ""
+
+  const auth = async () => {
+    const challenge = urlParams.get("login_challenge")
+
+    let req = {
+      username: username,
+      password: password,
+      private_key: "",
+      public_key: ""
+    }
+
+    if ($location === '/sign-up') {
+      if (password != repassword) {
+        error = "passwords does not match"
+        return
+      }
+
+      let keys = oxyd.generate(password)
+
+      req.public_key = keys.publicKey
+      req.private_key = keys.privateKey
+    }
+
+    const res = await fetch(`/api/auth/${$location === '/sign-up' ? 'register' : 'login'}${challenge != '' ? '?login_challenge='+challenge : ''}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(req)
+    })
+
+    const data = await res.json()
+
+    console.log(data)
+
+    if (data.status == "SUCCESS") {
+      if (data.content.redirect_url) {
+        window.location.replace(data.content.redirect_url)
+      } else {
+        push("/user")
+      }
+    }
+  }
 </script>
 
 <div class="auth" in:fade={{duration: 300}} out:fade={{duration: 300}}>
@@ -17,12 +68,12 @@
     <h4 class="title">{$location === '/sign-up' ? 'Sign-up' : 'Sign-in'}</h4>
 
     <div class="fields">
-      <Field type="text" placeholder="Username" />
-      <Field type="password" placeholder="password" />
+      <Field type="text" placeholder="Username" bind:value={username} />
+      <Field type="password" placeholder="password" bind:value={password} />
       {#if $location === '/sign-up'}
-        <Field type="password" placeholder="Repeat password" />
+        <Field type="password" placeholder="Repeat password" bind:value={repassword} />
       {/if}
-      <Button link="#">
+      <Button on:click={auth}>
         {$location === '/sign-up' ? 'Sign-up' : 'Sign-in'}
       </Button>
       <div class="question">
