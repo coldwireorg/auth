@@ -16,7 +16,7 @@
 
   <div class="services">
     {#each services as service}
-      <HubCategoryService name={service.name} desc={service.desc} tags={service.tags} />
+      <HubCategoryService name={service.name} desc={service.desc} tags={service.tags} link={service.link} />
     {/each}
   </div>
 </div>
@@ -29,7 +29,7 @@
     padding: 16px;
     gap: 16px;
 
-    background: #161B22;
+    background: var(--complementary-gray-3);
     border-radius: 8px;
 
     width: 496px;

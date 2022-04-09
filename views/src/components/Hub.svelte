@@ -3,7 +3,40 @@
 
   import Text from '../components/Text.svelte'
 
-  export let categories = []
+  let categories = [
+    {
+      name: "Organizing",
+      icon: "flame",
+      services: [
+        {
+          name: "Cinny",
+          desc: "Chat safely using matrix",
+          link: "https://organize.coldwire.org"
+        },
+        {
+          name: "Bloc",
+          desc: "Securely store your files",
+          tags: [
+            {text: "soon", color: "green"}
+          ]
+        },
+      ]
+    },
+    {
+      name: "Hosting",
+      icon: "hosting",
+      services: [
+        {
+          name: "VPS",
+          desc: "Run your own server anonymously",
+          tags: [
+            {text: "soon", color: "green"},
+            {text: "On request", color: "purple"}
+          ]
+        },
+      ]
+    }
+  ]
 </script>
 
 <div class="hub">
@@ -17,7 +50,8 @@
 
 <style>
   .hub {
-    margin: 32px;
+    margin-top: 92px;
+    margin-left: 32px;
     display: flex;
     flex-direction: column;
     gap: 16px;

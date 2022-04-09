@@ -21,6 +21,7 @@
 <style>
   .btn {
 		height: 32px;
+		min-width: 64px;
 
 		display: flex;
 		justify-content: center;

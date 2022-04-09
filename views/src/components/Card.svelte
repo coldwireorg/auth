@@ -18,8 +18,12 @@
   }
 
   .normal {
-    border: 2px solid var(--complementary-white-5);
     background-color: var(--complementary-white-5);
+    transition: 0.2s ease-in-out;
+  }
+
+  .normal:hover {
+    box-shadow: 0px 0px 2px 0px rgba(255, 255, 255, 0.623);
   }
 
   .green {

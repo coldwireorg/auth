@@ -1,16 +1,17 @@
 <script>
   export let type = 'p'
   export let color
+  export let style
 </script>
 
 {#if type === 'h1'}
-  <h1 style="color: {color};"><slot/></h1>
+  <h1 style="color: {color}; {style}"><slot/></h1>
 {:else if type === 'h2'}
-  <h2 style="color: {color};"><slot/></h2>
+  <h2 style="color: {color}; {style}"><slot/></h2>
 {:else if type === 'h3'}
-  <h3 style="color: {color};"><slot/></h3>
+  <h3 style="color: {color}; {style}"><slot/></h3>
 {:else if type === 'p'}
-  <p style="color: {color};"><slot/></p>
+  <p style="color: {color}; {style}"><slot/></p>
 {/if}
 
 <style>

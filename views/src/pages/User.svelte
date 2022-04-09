@@ -10,50 +10,20 @@
   import Text from '../components/Text.svelte'
 
   let userData = jwt_decode(document.cookie.split("=")[1])
-
-  let categories = [
-    {
-      name: "Organizing",
-      icon: "flame",
-      services: [
-        {
-          name: "Matrix",
-          desc: "Chat safely",
-        },
-        {
-          name: "Bloc",
-          desc: "Securely store your files",
-          tags: [
-            {text: "soon", color: "green"}
-          ]
-        },
-      ]
-    },
-    {
-      name: "Hosting",
-      icon: "hosting",
-      services: [
-        {
-          name: "VPS",
-          desc: "Run your own server anonymously",
-          tags: [
-            {text: "soon", color: "green"},
-            {text: "On request", color: "purple"}
-          ]
-        },
-      ]
-    }
-  ]
 </script>
 
 <div class="user" in:fade={{duration: 300}} out:fade={{duration: 300}}>
   <dir class="account">
     <Text type="h2">Account</Text>
-    <AccountCard usrdta={userData} />
-    <AccountPassword />
-    <AccountDonate />
+    <div class="widgets">
+      <div id="top">
+        <AccountCard usrdta={userData} />
+        <AccountPassword />
+      </div>
+      <AccountDonate />
+    </div>
   </dir>
-  <Hub categories={categories} />
+  <Hub />
 </div>
 
 <style>
@@ -64,18 +34,32 @@
     bottom: 0;
     right: 0;
     display: flex;
+
   }
 
   .user .account {
-    width: 316px;
+    width: 254px;
     padding: 32px;
     padding-top: 94px;
     margin: 0;
 
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 16px;
 
-    background-color: var(--complementary-gray-2);
+    background-color: var(--complementary-gray-3);
+  }
+
+  .user .account .widgets {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+  }
+
+  .user .account .widgets #top {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
   }
 </style>

@@ -6,7 +6,9 @@
 </script>
 
 <Card style="display: flex; flex-direction: column; gap:8px;">
-  <Text type="h2">Change your password</Text>
+  <Text type="h3">
+    Change your password
+  </Text>
   <br>
   <Field type="password" placeholder="Enter your new password" />
   <Field type="password" placeholder="Repeat your new password" />
