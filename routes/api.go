@@ -23,7 +23,7 @@ func Api(app *fiber.App) {
 	usr := api.Group("/user")
 	usr.Get("/key/:username", user.Key)                        // get user's public key
 	usr.Put("/password", middleware.CheckToken, user.Password) // update user's informations
-	//usr.Delete("/")                                            // delte user
+	usr.Delete("/", middleware.CheckToken, user.Delete)        // delete user
 
 	/*
 		services := api.Group("/services")

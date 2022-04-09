@@ -14,6 +14,10 @@ func Logout(c *fiber.Ctx) error {
 	utils.DelCookie(c, "token")
 
 	if challenge == "" {
+		if c.Method() == "GET" {
+			return c.Redirect("/")
+		}
+
 		return errors.Handle(c, errors.Success)
 	} else {
 		redirect, err := cwhydra.LogoutManager(*cwhydra.AdminApi).Accept(challenge)
