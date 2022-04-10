@@ -19,6 +19,18 @@
       conditions: [
         (detail) => {
           if (isAuth()) {
+            push("/user/hub")
+          } else {
+            push("/sign-in")
+          }
+        }
+      ]
+    }),
+    '/user/:page?': wrap({
+      component: User,
+      conditions: [
+        (detail) => {
+          if (isAuth()) {
             return true
           } else {
             push("/sign-in")
@@ -31,7 +43,7 @@
       conditions: [
         (detail) => {
           if (isAuth()) {
-            push("/")
+            push("/user/hub")
           } else {
             return true
           }
@@ -43,7 +55,7 @@
       conditions: [
         (detail) => {
           if (isAuth()) {
-            push("/")
+            push("/user/hub")
           } else {
             return true
           }
@@ -59,10 +71,6 @@
   </a>
 
   <Router {routes} />
-
-  {#if $location === '/sign-in' || $location === '/sign-up'}
-    <div class="background"></div>
-  {/if}
 </main>
 
 <style>
@@ -79,16 +87,5 @@
 
     height: 16px;
     width: 27.65px;
-  }
-
-  .background {
-    background: url(https://static.coldwire.org/imgs/background.jpg) no-repeat center;
-    background-size: cover;
-
-    position: absolute;
-    left: 0; right: 0;
-    top: 0; bottom: 0;
-
-    z-index: -1;
   }
 </style>

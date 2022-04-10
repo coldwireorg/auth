@@ -51,13 +51,15 @@
       if (data.content.redirect_url) {
         window.location.replace(data.content.redirect_url)
       } else {
-        push("/")
+        push("/user/hub")
       }
     } else {
       error = data.message
     }
   }
 </script>
+
+<div class="background"></div>
 
 <div class="auth">
   <div class="form">
@@ -92,6 +94,17 @@
 </div>
 
 <style>
+  .background {
+    background: url(https://static.coldwire.org/imgs/background.jpg) no-repeat center;
+    background-size: cover;
+
+    position: absolute;
+    left: 0; right: 0;
+    top: 0; bottom: 0;
+
+    z-index: -1;
+  }
+
   .auth {
     position: absolute;
     left: 0; bottom: 0; top: 0;

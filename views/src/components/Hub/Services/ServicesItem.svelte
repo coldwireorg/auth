@@ -1,6 +1,6 @@
 <script>
-  import Text from '../components/Text.svelte'
-  import Tag from '../components/Tag.svelte'
+  import Text from '../../Text.svelte'
+  import Tag from '../../Tag.svelte'
 
   export let name
   export let desc

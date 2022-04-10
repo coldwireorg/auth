@@ -1,7 +1,6 @@
 <script>
-  import HubCategoryService from './HubCategoryService.svelte';
-
-  import Text from '../components/Text.svelte'
+  import Item from './ServicesItem.svelte';
+  import Text from '../../Text.svelte'
 
   export let name
   export let icon
@@ -16,7 +15,7 @@
 
   <div class="services">
     {#each services as service}
-      <HubCategoryService name={service.name} desc={service.desc} tags={service.tags} link={service.link} />
+      <Item name={service.name} desc={service.desc} tags={service.tags} link={service.link} />
     {/each}
   </div>
 </div>
@@ -32,7 +31,7 @@
     background: var(--complementary-gray-3);
     border-radius: 8px;
 
-    width: 496px;
+    max-width: 496px;
   }
 
   .category .header {

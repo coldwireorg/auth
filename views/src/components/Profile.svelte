@@ -6,12 +6,12 @@
 
 <style>
   span {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background-color: var(--secondary-violet);
 
-    font-size: 14px;
+    font-size: 12px;
 
     display: flex;
     justify-content: center;

@@ -1,8 +1,8 @@
 <script>
-  import Card from '../components/Card.svelte'
-  import Text from '../components/Text.svelte'
-  import Field from '../components/Field.svelte'
-  import Button from '../components/Button.svelte'
+  import Card from './SettingsCard.svelte'
+  import Text from '../../Text.svelte'
+  import Field from '../../Field.svelte'
+  import Button from '../../Button.svelte'
 
   let password = ""
   let error = ""
@@ -36,7 +36,7 @@
   }
 </script>
 
-<Card style="display: flex; flex-direction: column; gap:8px;">
+<Card>
   <Text type="h3">
     Delete your account
   </Text>

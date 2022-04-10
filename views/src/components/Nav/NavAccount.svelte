@@ -1,7 +1,7 @@
 <script>
-  import Card from '../components/Card.svelte'
-  import Profile from '../components/Profile.svelte'
-  import Text from '../components/Text.svelte'
+  import Card from '../Card.svelte'
+  import Profile from '../Profile.svelte'
+  import Text from '../Text.svelte'
 
   export let usrdta
 
@@ -15,18 +15,14 @@
   <div class="user">
     <div class="info">
       <Profile username={usrdta.username} />
-      <Text type="h2">{usrdta.username}</Text>
+      <Text type="h3">{usrdta.username}</Text>
     </div>
     <span class="logout" on:click={logout}>
   </div>
   <br>
   <div class="account-info-item">
     <img src="/icons/key.svg" alt="">
-    <Text type="h3" color="var(--complementary-white-50)">{usrdta.public_key.slice(0, 23)}...</Text>
-  </div>
-  <div class="account-info-item">
-    <img src="/icons/eye.svg" alt="">
-    <Text type="h3" color="var(--complementary-white-50)">{usrdta.role}</Text>
+    <Text type="h3" color="var(--complementary-white-50)">{usrdta.public_key.slice(0, 15)}...</Text>
   </div>
 </Card>
 <style>
@@ -47,12 +43,13 @@
   }
 
   .user .logout {
-    height: 28px;
-    width: 28px;
+    height: 24px;
+    width: 24px;
     border-radius: 25px;
     background: url(/icons/logout.svg) no-repeat center;
     background-size: 70%;
     transition: 0.3s;
+    cursor: pointer;
   }
 
   .user .logout:hover {

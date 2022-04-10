@@ -1,7 +1,7 @@
 <script>
-  import Card from '../components/Card.svelte'
-  import Text from '../components/Text.svelte'
-  import Button from '../components/Button.svelte';
+  import Card from '../Card.svelte'
+  import Text from '../Text.svelte'
+  import Button from '../Button.svelte';
 </script>
 
 <Card type="green-25" style="display: flex; flex-direction: column; gap:16px">
@@ -12,7 +12,7 @@
       <img src="/icons/heart.svg" alt="">
     </Button>
     <a href="https://coldwire.org/about#donate" target="_blank">
-      <Text style="max-width: 64px;font-size:12px;" color="var(--complementary-white-50)" type="p">How we spend it</Text>
+      <Text style="max-width: 54px;font-size:12px;" color="var(--complementary-white-50)" type="p">How we spend it</Text>
     </a>
   </div>
 </Card>
