@@ -11,7 +11,7 @@
 <style>
   .settings {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: wrap;
     gap: 16px;
     max-width: 528px;

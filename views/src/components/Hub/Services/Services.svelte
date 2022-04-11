@@ -8,9 +8,14 @@
       icon: "flame",
       services: [
         {
-          name: "Cinny",
+          name: "Element",
           desc: "Chat safely using matrix",
           link: "https://coldwire.org/_matrix/client/r0/login/sso/redirect?redirectUrl=https://organize.coldwire.org"
+        },
+        {
+          name: "Cinny",
+          desc: "Simple matrix client",
+          link: "https://coldwire.org/_matrix/client/r0/login/sso/redirect?redirectUrl=https://cinny.coldwire.org"
         },
         {
           name: "Bloc",
@@ -27,8 +32,8 @@
           ]
         },
         {
-          name: "Agenda",
-          desc: "Encrypted agenda",
+          name: "Riot",
+          desc: "Organize protests",
           tags: [
             {text: "soon", color: "green"}
           ]
@@ -83,5 +88,6 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+    overflow: auto;
   }
 </style>

@@ -9,7 +9,7 @@
   <div class="nav-content">
     <div id="top">
       <a class="link" href="/#/user/hub"><img src="/icons/services.svg" alt=""> Hub</a>
-      <a class="link" href="/#/user/blog"><img src="/icons/info.svg" alt=""> Blog</a>
+      <!-- <a class="link" href="/#/user/blog"><img src="/icons/info.svg" alt=""> Blog</a> -->
       {#if usr.role == "admin"}
         <a class="link" href="/#/user/admin"><img src="/icons/admin.svg" alt=""> Admin</a>
       {/if}
