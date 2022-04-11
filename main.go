@@ -51,7 +51,7 @@ func init() {
 	})
 
 	// generate key for signing jwt tokens
-	tokens.Init()
+	tokens.Init(env.Get("JWT_KEY", ""))
 }
 
 func main() {
