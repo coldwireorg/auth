@@ -82,7 +82,7 @@
   }
 
   .logo div {
-    background: url(https://static.coldwire.org/imgs/logo.svg);
+    background: url(/img/logo.svg);
     background-size: cover;
 
     height: 16px;

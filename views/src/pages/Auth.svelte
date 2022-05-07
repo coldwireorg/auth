@@ -1,11 +1,10 @@
 <script>
   import { location, push } from 'svelte-spa-router'
-  import oxyd from '../libs/oxyd';
+  import oxyd from '../libs/oxyd'
 
   import Link from '../components/Link.svelte'
-  import Field from '../components/Field.svelte';
-  import Button from '../components/Button.svelte';
-
+  import Field from '../components/Field.svelte'
+  import Button from '../components/Button.svelte'
 
   const urlParams = new URLSearchParams(window.location.search);
 
@@ -59,6 +58,7 @@
 </script>
 
 <div class="background"></div>
+<a class="art" href="https://aenamiart.artstation.com/" target="_blank">Art by Alena Aenami</a>
 
 <div class="auth">
   <div class="form">
@@ -94,7 +94,7 @@
 
 <style>
   .background {
-    background: url(https://static.coldwire.org/imgs/background.jpg) no-repeat center;
+    background: url(/img/background.jpg) no-repeat center;
     background-size: cover;
 
     position: absolute;
@@ -102,6 +102,16 @@
     top: 0; bottom: 0;
 
     z-index: -1;
+  }
+
+  .art {
+    position: absolute;
+    bottom: 32px;
+    left: 32px;
+    background-color: var(--complementary-gray-3);
+    padding: 8px 16px 8px 16px;
+    border-radius: 8px;
+    z-index: 50;
   }
 
   .auth {
