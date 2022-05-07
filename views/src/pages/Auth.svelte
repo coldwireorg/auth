@@ -1,16 +1,18 @@
 <script>
   import { location, push } from 'svelte-spa-router'
+  import oxyd from '../libs/oxyd';
 
   import Link from '../components/Link.svelte'
   import Field from '../components/Field.svelte';
   import Button from '../components/Button.svelte';
+
 
   const urlParams = new URLSearchParams(window.location.search);
 
   let username = ""
   let password = ""
   let repassword = ""
-
+  
   let error = ""
 
   const auth = async () => {
@@ -29,10 +31,9 @@
         return
       }
 
-      let keys = oxyd.generate(password)
-
-      req.public_key = keys.publicKey
-      req.private_key = keys.privateKey
+      let keys = await oxyd.generate(password)
+      req.public_key = oxyd.utils.u8ToBase64(keys.public_key)
+      req.private_key = oxyd.utils.u8ToBase64(keys.private_key)
     }
 
     const res = await fetch(`/api/auth/${$location === '/sign-up' ? 'register' : 'login'}${challenge != null ? '?login_challenge='+challenge : ''}`, {
@@ -44,8 +45,6 @@
     })
 
     const data = await res.json()
-
-    console.log(data)
 
     if (data.status == "SUCCESS") {
       if (data.content.redirect_url) {
