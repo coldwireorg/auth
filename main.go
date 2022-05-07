@@ -50,20 +50,25 @@ func init() {
 		},
 	})
 
+	log.Print("load jwt secret")
 	// generate key for signing jwt tokens
 	tokens.Init(env.Get("JWT_KEY", ""))
 }
 
 func main() {
+	log.Print("init fiber")
+
 	// Create fiber instance
 	app := fiber.New()
 
+	log.Print("migrate tables")
 	// migrate database
 	utils.MigrateTables()
 
 	// Include cors
 	app.Use(cors.New())
 
+	log.Print("load routes")
 	// Setup routes
 	routes.Api(app)
 
@@ -92,7 +97,9 @@ func main() {
 		})
 	}
 
-	utils.InitClients()
+	log.Print(config.Conf.Server.Address + ":" + config.Conf.Server.Port)
+
+	//utils.InitClients()
 
 	log.Info().Err(app.Listen(config.Conf.Server.Address + ":" + config.Conf.Server.Port))
 }
