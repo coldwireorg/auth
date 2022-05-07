@@ -5,11 +5,11 @@ import (
 )
 
 type User struct {
-	Name       string `gorm:"not null;unique;primaryKey"`
-	Password   string `gorm:"not null"`
-	Group      string `gorm:"not null"`
-	PrivateKey string `gorm:"not null"`
-	PublicKey  string `gorm:"not null"`
+	Name       string `gorm:"not null;unique;primaryKey" json:"username"`
+	Password   string `gorm:"not null"                   json:"-"`
+	Group      string `gorm:"not null"                   json:"group"`
+	PrivateKey string `gorm:"not null"                   json:"private_key"`
+	PublicKey  string `gorm:"not null"                   json:"public_key"`
 }
 
 func (u User) Create() error {

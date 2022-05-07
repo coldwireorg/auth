@@ -5,20 +5,21 @@
   import User from './pages/User.svelte'
   import Auth from './pages/Auth.svelte'
 
-  const isAuth = () => {
-    if (document.cookie.split("=")[1]) {
+  const isAuth = async () => {
+    const res = await fetch(`/api/user/info`)
+		if (res.status === 200) {
       return true
+    } else {
+      return false
     }
-
-    return false
   }
 
   const routes = {
     '/': wrap({
       component: User,
       conditions: [
-        (detail) => {
-          if (isAuth()) {
+        async (detail) => {
+          if (await isAuth()) {
             push("/user/hub")
           } else {
             push("/sign-in")
@@ -29,8 +30,8 @@
     '/user/:page?': wrap({
       component: User,
       conditions: [
-        (detail) => {
-          if (isAuth()) {
+        async (detail) => {
+          if (await isAuth()) {
             return true
           } else {
             push("/sign-in")
@@ -41,8 +42,8 @@
     '/sign-in': wrap({
       component: Auth,
       conditions: [
-        (detail) => {
-          if (isAuth()) {
+        async (detail) => {
+          if (await isAuth()) {
             push("/user/hub")
           } else {
             return true
@@ -53,8 +54,8 @@
     '/sign-up': wrap({
       component: Auth,
       conditions: [
-        (detail) => {
-          if (isAuth()) {
+        async (detail) => {
+          if (await isAuth()) {
             push("/user/hub")
           } else {
             return true

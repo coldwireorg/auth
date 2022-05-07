@@ -21,6 +21,7 @@ func Api(app *fiber.App) {
 	authentication.All("/logout", auth.Logout)                        // logout
 
 	usr := api.Group("/user")
+	usr.Get("/info", middleware.CheckToken, user.Info)         // get user's public key
 	usr.Get("/key/:username", user.Key)                        // get user's public key
 	usr.Put("/password", middleware.CheckToken, user.Password) // update user's informations
 	usr.Delete("/", middleware.CheckToken, user.Delete)        // delete user
